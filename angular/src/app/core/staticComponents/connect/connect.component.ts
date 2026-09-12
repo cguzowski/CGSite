@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { FormContactComponent } from '../form-contact/form-contact.component';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-connect',
-    imports: [FormContactComponent, MatIconModule],
+    imports: [MatIconModule],
     templateUrl: './connect.component.html',
     styleUrl: './connect.component.css'
 })

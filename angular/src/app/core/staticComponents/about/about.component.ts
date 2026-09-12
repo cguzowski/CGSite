@@ -9,7 +9,6 @@ import { Component } from '@angular/core';
 })
 export class AboutComponent {
 
-  name: string = 'Christopher Guzowski';
   aspires: string[] = ['AI Engineer Role', 'Be part of a long-term team', 'Push Boundaries of Agentic AI'];
   skills: string[] = ['Ai Engineering', 'Full Stack Developemnt', 'System Design', 'Problem Solving', 'Cloud Deployment'];
   hobbies: string[] = ['Reading', 'Excercise', 'Cooking', 'Investing', 'Mindful activities'];

@@ -1,25 +1,14 @@
-<nav class="navbar">
-    <div class="navbar-brand">
-        <a href="#" class="logo-container">
-            <img src="assets/images/desertRose.jpg" alt="Logo Pic" class="logo-photo"/>
-        </a>
-    </div>
-    <span class="spacer"></span>
-    <button mat-icon-button (click)="toggleTheme()">
-      <mat-icon *ngIf="themeService.isDark(); else lightIcon">brightness_3</mat-icon>
-      <ng-template #lightIcon>
-        <mat-icon>wb_sunny</mat-icon>
-      </ng-template>
-    </button>
-    <button class="hamburgerMenu" (click)="toggleMenu()" id="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-    <ul class="nav-list" [class.active]="isMenuActive" id="navList">
-        <li class="nav-item" (click)="scrollToSection('about')">About</li>
-        <li class="nav-item" (click)="scrollToSection('connect')">Connect</li>
-        <li class="nav-item" (click)="scrollToSection('blog')">Blog</li>
-        <li class="nav-item" (click)="scrollToSection('projects')">Projects</li>
-    </ul>
+<nav aria-label="Main navigation">
+  <a class="brand" href="#home" aria-label="Christopher Guzowski — home">CG</a>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button type="button"
+    [attr.aria-label]="themeService.isDark() ? 'Use light theme' : 'Use dark theme'"
+    (click)="themeService.toggleTheme()">
+    {{ themeService.isDark() ? 'Light mode' : 'Dark mode' }}
+  </button>
 </nav>

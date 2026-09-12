@@ -1,23 +1,39 @@
+:host { display: block; }
+
+.site-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
 main {
-  height: 100vh; /* Full viewport height */
-  display: flex;
-  flex-direction: column;
+  width: min(100% - 2rem, 68rem);
+  margin-inline: auto;
 }
 
-/* Scroll container styling */
-.scroll-container {
-  flex: 1;
-  overflow-y: auto; /* Enable vertical scrolling */
-  scroll-snap-type: y mandatory; /* Enable snap type */
-}
-
-/* Section styling */
 .section {
-  height: 100vh;
-  scroll-snap-align: start; /* Align each section to the top */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; /* Prevents content going over to next section */
+  padding-block: clamp(2.5rem, 6vw, 5rem);
+  scroll-margin-top: 1rem;
+  overflow-wrap: anywhere;
 }
 
+.section + .section {
+  border-top: 1px solid var(--border-color);
+}
+
+.section-heading {
+  font-size: 2rem;
+  line-height: 1.25;
+  margin: 0 0 2rem;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+  padding: 0.75rem 1rem;
+  background: var(--page-background);
+  color: inherit;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus { transform: translateY(0); }

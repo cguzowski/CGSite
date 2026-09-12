@@ -1,144 +1,71 @@
-/* Container for the entire about section */
-.about-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
+:host {
+  display: block;
+  min-width: 0;
 }
 
-/* Flex container for photo and text */
-.photoText {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+.about-container {
   width: 100%;
-  font-size: 1.5vw;
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.photoText {
+  max-width: 70ch;
 }
 
 .flexpad {
-  flex: 1;
-  padding: .3rem;
+  display: flow-root;
 }
 
-/* Profile photo styling */
 .profile-photo {
-  max-width: 100%;          
-  height: auto;             
-  display: block;           
-  border-radius: 50%;
-  width: 18vw;                
-  height: 18vw;               
-  shape-outside: circle();
-  clip-path: circle(50%);
+  display: block;
   float: left;
+  width: 10rem;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 1.5rem 1rem 0;
 }
 
-/* bottom sections */
 .bottom {
-  display: flex;          
-  flex-direction: row;   
-  justify-content:space-evenly;
-  align-items:flex-start;    
-  width: 100%;             
-  box-sizing: border-box;  
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .skills, .hobbies, .aspire {
-  font-size: 1.5vw;
-  padding: 1rem;
-  
+  min-width: 0;
 }
 
-.skills li, .hobbies li, .aspire li {
-  list-style-type: circle;
-  padding: 0.2rem;
+h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.125rem;
+  line-height: 1.4;
 }
 
-.skills h3, .hobbies h3, .aspire h3 {
-  position:relative;
-  text-align: center;
-  left: 40%;
-  top: 40px;
+ul {
+  margin: 0;
+  padding-left: 1.25rem;
 }
 
+li {
+  padding-block: 0.2rem;
+}
 
-/* From Uiverse.io by neerajbaniwal */ 
-#special-shine {
-  transform: translate(-50%, -50%);
-  padding: 12px 48px;
-  color: #fff;
-  background: linear-gradient(to right, #9f9f9f 0, #fff 10%, #c2c2c2 20%);
-  background-position: 0;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shine 3s infinite linear;
-  animation-fill-mode: forwards;
-  white-space: nowrap;
-}
-@-moz-keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
-  }
-}
-@-webkit-keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
-  }
-}
-@-o-keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
-  }
-}
-@keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
+@media (max-width: 48rem) {
+  .bottom {
+    grid-template-columns: 1fr;
   }
 }
 
-
-
-/* Responsive layout for small screens, 768 for all sizes, TEMP FIX: 643px  */
-
-@media (max-width: 643px) {
-  .aspire, .skills, .hobbies {
-      font-size: 3vw; /* Scale down other text sections */
-      padding: 0;
+@media (max-width: 32rem) {
+  .profile-photo {
+    float: none;
+    margin: 0 0 1.5rem;
   }
 
-  .photoText {
-      align-items: center;
-      font-size: 3vw; /* Increase text size for small screens */
-      max-width: 95vw; /* Constrain text width */
-  }
 }
-
-

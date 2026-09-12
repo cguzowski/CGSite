@@ -1,5 +1,7 @@
 # Angular
 
+Project-specific commands and verified environment: [F1 baseline](../docs/BASELINE.md). For a non-watching headless run use `npm run test:ci` (Chrome required). The notes below are the original CLI scaffold reference, not the deployment procedure.
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.3.
 
 ## Development server

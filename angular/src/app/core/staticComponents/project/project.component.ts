@@ -1,6 +1,4 @@
-import { INPUT_MODALITY_DETECTOR_DEFAULT_OPTIONS } from '@angular/cdk/a11y';
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-project',
@@ -8,11 +6,4 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: './project.component.html',
     styleUrl: './project.component.css'
 })
-export class ProjectComponent implements OnInit {
-
-
-  constructor() {}
-
-  ngOnInit() {
-  }
-}
+export class ProjectComponent {}

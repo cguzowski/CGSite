@@ -1,19 +1,21 @@
-<header>
-    <app-navbar></app-navbar>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+  <app-navbar></app-navbar>
 </header>
-<main role="main">
-    <div class="scroll-container">
-        <section id="about" class="section">
-            <app-about></app-about>
-        </section>
-        <section id="connect" class="section">
-            <app-connect></app-connect>
-        </section>
-        <section id="blog" class="section">
-            <app-blog></app-blog>
-        </section>
-        <section id="projects" class="section">
-            <app-project></app-project>
-        </section>
-    </div>
+<main id="main-content" tabindex="-1">
+  <section id="home" class="section" aria-label="Home" tabindex="-1">
+    <app-home></app-home>
+  </section>
+  <section id="about" class="section" aria-labelledby="about-heading" tabindex="-1">
+    <h2 id="about-heading" class="section-heading">About</h2>
+    <app-about></app-about>
+  </section>
+  <section id="projects" class="section" aria-labelledby="projects-heading" tabindex="-1">
+    <h2 id="projects-heading" class="section-heading">My projects</h2>
+    <app-project></app-project>
+  </section>
+  <section id="contact" class="section" aria-labelledby="contact-heading" tabindex="-1">
+    <h2 id="contact-heading" class="section-heading">Contact</h2>
+    <div id="connect" tabindex="-1"><app-connect></app-connect></div>
+  </section>
 </main>
