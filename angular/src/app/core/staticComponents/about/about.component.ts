@@ -1,15 +1,29 @@
-import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
+import { SteamCupComponent } from './steam-cup.component';
+import { waitForAboutMedia } from './about-media';
 
 @Component({
-    selector: 'app-about',
-    imports: [NgFor],
-    templateUrl: './about.component.html',
-    styleUrl: './about.component.css'
+  selector: 'app-about',
+  imports: [SteamCupComponent],
+  templateUrl: './about.component.html',
+  styleUrl: './about.component.css'
 })
 export class AboutComponent {
+  readonly cupReady = signal(false);
 
-  aspires: string[] = ['AI Engineer Role', 'Be part of a long-term team', 'Push Boundaries of Agentic AI'];
-  skills: string[] = ['Ai Engineering', 'Full Stack Developemnt', 'System Design', 'Problem Solving', 'Cloud Deployment'];
-  hobbies: string[] = ['Reading', 'Excercise', 'Cooking', 'Investing', 'Mindful activities'];
+  constructor() {
+    const document = inject(DOCUMENT);
+    const host = inject(ElementRef<HTMLElement>);
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      const cleanup = waitForAboutMedia(
+        host.nativeElement,
+        document.querySelector<HTMLVideoElement>('#home video'),
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        () => this.cupReady.set(true)
+      );
+      destroyRef.onDestroy(cleanup);
+    });
+  }
 }

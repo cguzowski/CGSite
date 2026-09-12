@@ -2,39 +2,30 @@
 
     <div class="photoText">
         <div class="flexpad">
-            <img src="assets/images/cgPic.JPG" alt="Christopher Guzowski" class="profile-photo" />
+            <div class="portrait-wrap">
+                <img src="assets/images/cgPic.JPG" alt="Christopher Guzowski" class="profile-photo" />
+                <svg class="portrait-words" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+                    <text x="100" y="12">Learn</text>
+                    <text x="188" y="100" transform="rotate(90 188 100)">Test</text>
+                    <text x="100" y="188" transform="rotate(180 100 188)">Build</text>
+                    <text x="12" y="100" transform="rotate(-90 12 100)">Plan</text>
+                </svg>
+            </div>
 
-            My fascination with technology began in childhood, surrounded by desktop computers, 
-            TVs, VCR/DVD players, and gaming consoles. I was captivated by how these systems created their “magic” behind the scenes, 
-            which sparked my drive to understand their inner workings. My first “Ooo” moment came when I discovered programming, followed by countless “Aha!” 
-            moments as I built, solved, and explored new possibilities. Today, that same curiosity fuels my passion for AI engineering and agentic AI—developing 
-            systems that not only process information but also reason, act, and collaborate dynamically. As the industry evolves, I continue learning and building, 
-            driven by the excitement of shaping intelligent technologies that extend human potential.
+            <p class="biography">My fascination with technology began in childhood, surrounded by desktop computers,
+            TVs, VCR/DVD players, and gaming consoles. I was captivated by how these systems created their “magic” behind the scenes,
+            which sparked my drive to understand their inner workings. My first “Ooo” moment came when I discovered programming, followed by countless “Aha!”
+            moments as I built, solved, and explored new possibilities. Today, that same curiosity fuels my passion for AI engineering and agentic AI—developing
+            systems that not only process information but also reason, act, and collaborate dynamically. As the industry evolves, I continue learning and building,
+            driven by the excitement of shaping intelligent technologies that extend human potential.</p>
         </div>
     </div>
 
-    <div class="bottom">
-
-        <div class="skills">
-            <h3>Skills</h3>
-            <ul>
-                <li *ngFor="let skill of skills">{{ skill }}</li>
-            </ul>
-        </div>
-
-        <div class="aspire">
-            <h3>Aspirations</h3>
-            <ul>
-                <li *ngFor="let aspire of aspires">{{ aspire }}</li>
-            </ul>
-        </div>
-
-        <div class="hobbies">
-            <h3>Hobbies</h3>
-            <ul>
-                <li *ngFor="let hobby of hobbies">{{ hobby }}</li>
-            </ul>
-        </div>
-
+    <div class="coffee-slot" aria-hidden="true">
+        @defer (when cupReady()) {
+            <app-steam-cup />
+        } @placeholder {
+            <div class="coffee-placeholder"></div>
+        }
     </div>
 </div>

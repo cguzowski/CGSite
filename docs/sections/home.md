@@ -12,4 +12,4 @@ Owner: Home sub-agent. Slice H1; section 1.
 
 **Home:** concise first impression and links to About, Projects and Contact. Detailed biography belongs to About; contact methods belong to Contact.
 
-F3 added a minimal Home component with the single page h1, role focus and project link. H1 can develop its content/design further. Coordinate shell edits with foundation. Scope and acceptance live in [roadmap](../ROADMAP.md).
+Home contains the single page h1, user-supplied role and Fuji photo credit. Navigation provides the section entry points. Background framing and feathering live in app.component.css; video metadata supplies its natural aspect ratio in app.component.html. Coordinate shell edits with foundation. Scope and acceptance live in [roadmap](../ROADMAP.md).

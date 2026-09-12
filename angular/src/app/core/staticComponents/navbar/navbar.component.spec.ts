@@ -36,7 +36,17 @@ describe('NavbarComponent', () => {
   it('exposes a named theme control and delegates activation', () => {
     const button: HTMLButtonElement | null = fixture.nativeElement.querySelector('button[aria-label="Use dark theme"]');
     expect(button).not.toBeNull();
+    expect(button?.querySelector('[data-icon="moon"]')).not.toBeNull();
+    expect(button?.textContent?.trim()).toBe('');
     button?.click();
     expect(themeService.toggleTheme).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows a sun when activating light theme', () => {
+    themeService.isDark.and.returnValue(true);
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement | null = fixture.nativeElement.querySelector('button[aria-label="Use light theme"]');
+    expect(button?.querySelector('[data-icon="sun"]')).not.toBeNull();
   });
 });

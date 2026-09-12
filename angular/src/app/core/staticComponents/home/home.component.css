@@ -1,4 +1,4 @@
-:host { display: block; max-width: 48rem; }
-h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.15; margin: 0 0 1rem; }
-p { font-size: 1.25rem; margin-bottom: 1.5rem; }
-a { color: inherit; text-underline-offset: 0.25em; }
+:host { display: block; }
+h1 { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.15; margin: 0 0 0.5rem; }
+p { font-size: 1rem; margin: 0 0 0.5rem; }
+.photo-credit { font-size: 0.8rem; }

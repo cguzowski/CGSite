@@ -1,11 +1,13 @@
 # About index
 
-Owner: About sub-agent. Slice A1; section 2.
+Owner: About sub-agent. Slices A1/A2; section 2.
 
 | Term | Current lookup |
 | --- | --- |
-| Biography / skills / aspirations | [about.component.ts](../../angular/src/app/core/staticComponents/about/about.component.ts), [about.component.html](../../angular/src/app/core/staticComponents/about/about.component.html) |
+| Biography / responsive portrait and coffee | [about.component.ts](../../angular/src/app/core/staticComponents/about/about.component.ts), [about.component.html](../../angular/src/app/core/staticComponents/about/about.component.html) |
 | Styles / tests | [about](../../angular/src/app/core/staticComponents/about) |
+| Deferred media gate | [about-media.ts](../../angular/src/app/core/staticComponents/about/about-media.ts), [tests](../../angular/src/app/core/staticComponents/about/about-media.spec.ts) |
+| Foreground cup / expanded steam canvas | [steam-cup.component.ts](../../angular/src/app/core/staticComponents/about/steam-cup.component.ts), [steam-animation.ts](../../angular/src/app/core/staticComponents/about/steam-animation.ts), [bounds tests](../../angular/src/app/core/staticComponents/about/steam-animation.spec.ts) |
 | Existing public resume | [resume.pdf](../../angular/public/assets/documents/resume.pdf) |
 | Images | [images](../../angular/public/assets/images) |
 

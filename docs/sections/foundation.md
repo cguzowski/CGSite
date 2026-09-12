@@ -12,6 +12,7 @@ Owner: coordinator/foundation agent. Active slices F3, M1, R1; F1/F2 are histori
 | Theme behavior | [theme.service.ts](../../angular/src/app/core/singletonServices/theme.service.ts) |
 | Build / SSR | [package.json](../../angular/package.json), [angular.json](../../angular/angular.json), [server.ts](../../angular/server.ts) |
 | Assets | [public](../../angular/public) |
+| Home background video | [Fuji WebM](../../angular/public/videos/fuji-water-stabilized-vp9-download.webm); sizing in app.component.css |
 | Verified environment / serving / baseline results | [F1 baseline](../BASELINE.md) |
 
 **Shell:** shared page composition/navigation. **Static output:** built files served without application rendering process. **Migration:** moving behavior together with consumers and verification.
