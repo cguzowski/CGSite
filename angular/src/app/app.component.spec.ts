@@ -47,4 +47,13 @@ describe('AppComponent', () => {
       expect(compiled.querySelector(link.hash)).withContext(link.textContent ?? '').not.toBeNull();
     }
   });
+
+  it('identifies the site author and copyright in a footer', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('footer')?.textContent)
+      .toContain('Designed & Built by Christopher Guzowski © All Rights Reserved 2026');
+  });
 });

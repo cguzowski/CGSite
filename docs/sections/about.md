@@ -9,6 +9,9 @@ Owner: About sub-agent. Slices A1/A2; section 2.
 | Deferred media gate | [about-media.ts](../../angular/src/app/core/staticComponents/about/about-media.ts), [tests](../../angular/src/app/core/staticComponents/about/about-media.spec.ts) |
 | Foreground cup / expanded steam canvas | [steam-cup.component.ts](../../angular/src/app/core/staticComponents/about/steam-cup.component.ts), [steam-animation.ts](../../angular/src/app/core/staticComponents/about/steam-animation.ts), [bounds tests](../../angular/src/app/core/staticComponents/about/steam-animation.spec.ts) |
 | Existing public resume | [resume.pdf](../../angular/public/assets/documents/resume.pdf) |
+| Skills / core tech / hobbies snapshot | [about.component.html](../../angular/src/app/core/staticComponents/about/about.component.html), [responsive styles and tests](../../angular/src/app/core/staticComponents/about) |
+| Resume / GitHub / LinkedIn cards | [about.component.html](../../angular/src/app/core/staticComponents/about/about.component.html), [styles and tests](../../angular/src/app/core/staticComponents/about) |
+| Original local profile icons | [profile-icons](../../angular/public/assets/icons/profile-icons) |
 | Images | [images](../../angular/public/assets/images) |
 
 **About:** background, professional experience, education and resume. **Home:** brief introduction. **Contact:** direct profile/email access, owned by the [Contact agent](contact.md).

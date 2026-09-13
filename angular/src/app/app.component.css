@@ -21,14 +21,30 @@ main {
   margin-inline: auto;
 }
 
+.site-footer {
+  width: min(100% - 2rem, 68rem);
+  margin: 0 auto;
+  padding: 1.5rem 0 2rem;
+  border-top: 1px solid var(--border-color);
+  color: color-mix(in srgb, var(--page-text) 55%, var(--page-background));
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.site-footer p { margin: 0; }
+
 .section {
-  padding-block: clamp(2.5rem, 6vw, 5rem);
+  padding-block: clamp(2rem, 4vw, 3.5rem);
   scroll-margin-top: 1rem;
   overflow-wrap: anywhere;
 }
 
 .section + .section {
   border-top: 1px solid var(--border-color);
+}
+
+#contact {
+  padding-bottom: clamp(1.4rem, 2.8vw, 2.45rem);
 }
 
 #home {
@@ -86,7 +102,7 @@ main {
 .section-heading {
   font-size: 2rem;
   line-height: 1.25;
-  margin: 0 0 2rem;
+  margin: 0 0 1.5rem;
 }
 
 .skip-link {

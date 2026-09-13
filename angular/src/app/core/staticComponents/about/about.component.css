@@ -1,17 +1,18 @@
 :host {
   display: block;
   min-width: 0;
+  --profile-accent: #176b67;
+  --profile-glow: color-mix(in srgb, var(--profile-accent) 34%, transparent);
+}
+
+:host-context(.dark-theme) {
+  --profile-accent: #74ddd3;
 }
 
 .about-container {
   width: 100%;
-  font-size: 1rem;
   line-height: 1.65;
   overflow-wrap: anywhere;
-}
-
-.photoText {
-  max-width: 70ch;
 }
 
 .flexpad {
@@ -34,7 +35,6 @@
   display: block;
   width: calc(100% - 2rem);
   height: calc(100% - 2rem);
-  aspect-ratio: 1;
   object-fit: cover;
   border-radius: 50%;
 }
@@ -80,14 +80,117 @@
 .about-container {
   display: grid;
   grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 5rem);
+  gap: clamp(1.5rem, 3vw, 3rem);
   align-items: start;
 }
 
-.photoText { max-width: none; }
 .biography { margin: 0; }
 .coffee-slot { height: 21rem; min-width: 0; }
 .coffee-placeholder { height: 100%; }
+
+.about-snapshot {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.snapshot-group {
+  justify-self: center;
+  max-width: 100%;
+}
+
+.snapshot-group h3 {
+  margin: 0 0 0.65rem;
+  color: var(--profile-accent);
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.snapshot-list,
+.tech-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.snapshot-list li + li,
+.tech-list > div + div { margin-top: 0.4rem; }
+.tech-list dt { font-weight: 700; }
+.tech-list dd { margin: 0; }
+
+.profile-links {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.5rem, 3vw, 2rem);
+  margin-top: clamp(0.25rem, 1vw, 0.75rem);
+}
+
+.profile-link {
+  display: flex;
+  justify-self: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.5rem;
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.profile-link__icon {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  overflow: visible;
+  background-color: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  transition: filter 180ms ease, transform 180ms ease;
+}
+
+.profile-link__icon--resume {
+  mask-image: url('/assets/icons/profile-icons/resume.svg');
+  -webkit-mask-image: url('/assets/icons/profile-icons/resume.svg');
+}
+
+.profile-link__icon--github {
+  mask-image: url('/assets/icons/profile-icons/github.svg');
+  -webkit-mask-image: url('/assets/icons/profile-icons/github.svg');
+}
+
+.profile-link__icon--linkedin {
+  mask-image: url('/assets/icons/profile-icons/linkedin.svg');
+  -webkit-mask-image: url('/assets/icons/profile-icons/linkedin.svg');
+}
+
+.profile-link__label {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.profile-link:hover,
+.profile-link:focus-visible {
+  color: var(--profile-accent);
+  text-shadow: 0 0 0.65rem var(--profile-glow);
+  transform: translateY(-0.15rem);
+}
+
+.profile-link:hover .profile-link__icon,
+.profile-link:focus-visible .profile-link__icon {
+  filter: drop-shadow(0 0 0.45rem var(--profile-glow));
+  transform: scale(1.06);
+}
 
 @media (max-width: 48rem) {
   .about-container {
@@ -112,4 +215,11 @@
     height: clamp(12rem, 43vw, 16rem);
   }
   .biography { grid-column: 1 / -1; grid-row: 2; }
+  .about-snapshot {
+    grid-row: 3;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .snapshot-group { justify-self: stretch; }
+  .profile-links { grid-row: 4; }
 }
