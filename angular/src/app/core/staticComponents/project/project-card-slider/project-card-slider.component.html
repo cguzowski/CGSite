@@ -1,45 +1,47 @@
-<section class="project-slider" aria-label="Personal projects" aria-roledescription="carousel"
+<section class="project-slider" [attr.aria-label]="ariaLabel" aria-roledescription="carousel"
   (keydown)="onKeydown($event)">
-  <div class="project-title" *ngIf="projects[activeIndex()] as activeProject">
-    <a class="project-title-link" [href]="activeProject.url" target="_blank" rel="noopener noreferrer"
-      [attr.aria-label]="'Open ' + activeProject.title + ' in a new tab'">
-      <span>{{ activeProject.title }}</span>
+  <div class="project-title" *ngIf="slides[activeIndex()] as activeSlide">
+    <a *ngIf="activeSlide.url; else plainTitle" class="project-title-link" [href]="activeSlide.url"
+      target="_blank" rel="noopener noreferrer"
+      [attr.aria-label]="'Open ' + activeSlide.title + ' in a new tab'">
+      <span>{{ activeSlide.title }}</span>
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M14 5h5v5M19 5l-9 9M19 13v6H5V5h6" />
       </svg>
     </a>
+    <ng-template #plainTitle><span class="project-slide-title">{{ activeSlide.title }}</span></ng-template>
   </div>
 
-  <swiper-container #deck init="false" tabindex="0" aria-label="Project cards. Use left and right arrow keys to browse."
+  <swiper-container #deck init="false" tabindex="0" aria-label="Project slides. Use left and right arrow keys to browse."
     (pointerdown)="pause()" (click)="pause()" (keydown)="pause()">
-    <swiper-slide *ngFor="let project of projects; let i = index"
+    <swiper-slide *ngFor="let slide of slides; let i = index"
       [attr.inert]="i !== activeIndex() ? '' : null">
-      <article class="project-card" [style.--card-color]="project.color || '#147df5'">
-        <img class="project-image" [src]="project.image" [alt]="project.imageAlt || project.title"
+      <article class="project-card" [style.--card-color]="slide.color || '#147df5'">
+        <img class="project-image" [src]="slide.image" [alt]="slide.imageAlt || slide.title"
           draggable="false" />
         <div class="project-copy">
-          <p class="project-text">{{ project.description }}</p>
+          <p class="project-text">{{ slide.description }}</p>
         </div>
       </article>
     </swiper-slide>
   </swiper-container>
 
   <div class="controls" aria-label="Slider controls">
-    <button type="button" class="arrow" aria-label="Previous project"
+    <button type="button" class="arrow" aria-label="Previous slide"
       [disabled]="!ready() || atStart()" (click)="previous()">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7" /></svg>
     </button>
     <button type="button" class="play" [attr.aria-label]="playing() ? 'Pause slideshow' : 'Play slideshow'"
-      [attr.aria-pressed]="playing()" [disabled]="!ready() || projects.length < 2" (click)="togglePlayback()">
+      [attr.aria-pressed]="playing()" [disabled]="!ready() || slides.length < 2" (click)="togglePlayback()">
       <svg *ngIf="!playing()" viewBox="0 0 24 24" aria-hidden="true"><path class="filled" d="M7 5l10 7-10 7z" /></svg>
       <svg *ngIf="playing()" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14" /></svg>
     </button>
-    <button type="button" class="arrow" aria-label="Next project"
+    <button type="button" class="arrow" aria-label="Next slide"
       [disabled]="!ready() || atEnd()" (click)="next()">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
     </button>
   </div>
   <p class="visually-hidden" aria-live="polite" aria-atomic="true">
-    Project {{ projects.length ? activeIndex() + 1 : 0 }} of {{ projects.length }}
+    Slide {{ slides.length ? activeIndex() + 1 : 0 }} of {{ slides.length }}
   </p>
 </section>

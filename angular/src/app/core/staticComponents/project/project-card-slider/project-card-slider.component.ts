@@ -13,9 +13,9 @@ import {
 } from '@angular/core';
 import type { SwiperContainer } from 'swiper/element';
 
-export interface ProjectCard {
+export interface ProjectSlide {
   title: string;
-  url: string;
+  url?: string;
   description: string;
   image: string;
   imageAlt?: string;
@@ -31,7 +31,8 @@ export interface ProjectCard {
   styleUrl: './project-card-slider.component.css',
 })
 export class ProjectCardSliderComponent implements AfterViewInit, OnDestroy {
-  @Input() projects: readonly ProjectCard[] = [];
+  @Input() slides: readonly ProjectSlide[] = [];
+  @Input() ariaLabel = 'Project walkthrough';
   @ViewChild('deck', { static: true }) private deck!: ElementRef<SwiperContainer>;
 
   readonly playing = signal(false);

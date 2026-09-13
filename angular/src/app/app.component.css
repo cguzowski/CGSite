@@ -61,7 +61,7 @@ main {
   margin-left: auto;
   margin-right: calc((100% - var(--image-width)) / 2 + 1rem);
   max-width: max(12rem, calc(var(--image-width) - 30rem));
-  text-align: left;
+  text-align: right;
 }
 
 @media (max-width: 60rem) {

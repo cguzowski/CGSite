@@ -1,3 +1,33 @@
 :host {
   display: block;
 }
+
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  align-items: start;
+  gap: clamp(2.5rem, 6vw, 5rem);
+}
+
+.project-walkthrough {
+  min-width: 0;
+}
+
+.project-heading {
+  width: min(100%, 34rem);
+  margin: 0 auto 0.75rem;
+  text-align: center;
+}
+
+h3 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+  color: color-mix(in srgb, var(--page-text) 72%, var(--page-background));
+  font-size: 1rem;
+  line-height: 1.55;
+}

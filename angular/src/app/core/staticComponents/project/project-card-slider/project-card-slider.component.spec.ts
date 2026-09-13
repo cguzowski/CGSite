@@ -16,9 +16,9 @@ describe('ProjectCardSliderComponent', () => {
 
     fixture = TestBed.createComponent(ProjectCardSliderComponent);
     component = fixture.componentInstance;
-    component.projects = [
+    component.slides = [
       { title: 'First', description: 'First card', image: imageData, url: 'https://example.com/first' },
-      { title: 'Second', description: 'Second card', image: imageData, url: 'https://example.com/second' },
+      { title: 'Second', description: 'Second card', image: imageData },
     ];
     fixture.detectChanges();
   });
@@ -26,11 +26,11 @@ describe('ProjectCardSliderComponent', () => {
   it('renders accessible controls and screen-reader position feedback without a visible counter', () => {
     const host: HTMLElement = fixture.nativeElement;
 
-    expect(host.querySelector('[aria-label="Previous project"]')).not.toBeNull();
+    expect(host.querySelector('[aria-label="Previous slide"]')).not.toBeNull();
     expect(host.querySelector('[aria-label="Play slideshow"]')).not.toBeNull();
-    expect(host.querySelector('[aria-label="Next project"]')).not.toBeNull();
+    expect(host.querySelector('[aria-label="Next slide"]')).not.toBeNull();
     const position = host.querySelector('[aria-live="polite"]');
-    expect(position?.textContent?.trim()).toBe('Project 1 of 2');
+    expect(position?.textContent?.trim()).toBe('Slide 1 of 2');
     expect(position?.classList).toContain('visually-hidden');
     expect(host.querySelector('.position')).toBeNull();
   });
@@ -49,9 +49,8 @@ describe('ProjectCardSliderComponent', () => {
 
     component.activeIndex.set(1);
     fixture.detectChanges();
-    titleLink = host.querySelector<HTMLAnchorElement>('.project-title-link');
-    expect(titleLink?.textContent?.trim()).toBe('Second');
-    expect(titleLink?.href).toBe('https://example.com/second');
+    expect(host.querySelector('.project-slide-title')?.textContent?.trim()).toBe('Second');
+    expect(host.querySelector('.project-title-link')).toBeNull();
   });
 
   it('maps arrow keys to slider navigation and prevents native scrolling', () => {

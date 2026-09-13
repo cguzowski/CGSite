@@ -9,17 +9,21 @@
 
 .project-slider {
   width: 100%;
-  padding: 24px 32px 12px;
+  padding: 0 32px 12px;
 }
 
 .project-title {
+  display: grid;
+  place-items: center;
   width: min(100%, var(--slider-width));
+  min-height: 3.5rem;
   min-width: 0;
   margin: 0 auto 18px;
   text-align: center;
 }
 
-.project-title-link {
+.project-title-link,
+.project-slide-title {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,7 +37,12 @@
   text-decoration-line: underline;
   text-decoration-thickness: 0.1em;
   text-underline-offset: 0.18em;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.project-slide-title {
+  display: inline-block;
+  text-decoration: none;
 }
 
 .project-title-link svg {
