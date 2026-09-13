@@ -27,7 +27,7 @@ main {
   padding: 1.5rem 0 2rem;
   border-top: 1px solid var(--border-color);
   color: color-mix(in srgb, var(--page-text) 55%, var(--page-background));
-  font-size: 0.8125rem;
+  font-size: 0.9rem;
   text-align: center;
 }
 
@@ -100,8 +100,9 @@ main {
 }
 
 .section-heading {
-  font-size: 2rem;
-  line-height: 1.25;
+  font-size: clamp(2.25rem, 3vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   margin: 0 0 1.5rem;
 }
 

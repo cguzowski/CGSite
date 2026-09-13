@@ -2,10 +2,11 @@ import { DOCUMENT } from '@angular/common';
 import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { SteamCupComponent } from './steam-cup.component';
 import { waitForAboutMedia } from './about-media';
+import { AboutMarqueeComponent } from './about-marquee.component';
 
 @Component({
   selector: 'app-about',
-  imports: [SteamCupComponent],
+  imports: [SteamCupComponent, AboutMarqueeComponent],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css'
 })

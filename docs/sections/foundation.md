@@ -8,7 +8,7 @@ Owner: coordinator/foundation agent. Active slices F3, M1, R1; F1/F2 are histori
 | Shell / tests | [app.component.ts](../../angular/src/app/app.component.ts), [app.component.spec.ts](../../angular/src/app/app.component.spec.ts) |
 | Routes / providers | [app.routes.ts](../../angular/src/app/app.routes.ts), [app.config.ts](../../angular/src/app/app.config.ts) |
 | Navigation | [navbar](../../angular/src/app/core/staticComponents/navbar) |
-| Global appearance | [styles.css](../../angular/src/styles.css), [custom-theme.scss](../../angular/src/custom-theme.scss) |
+| Global appearance / responsive typography | [styles.css](../../angular/src/styles.css), [app.component.css](../../angular/src/app/app.component.css), [custom-theme.scss](../../angular/src/custom-theme.scss) |
 | Theme behavior | [theme.service.ts](../../angular/src/app/core/singletonServices/theme.service.ts) |
 | Build / SSR | [package.json](../../angular/package.json), [angular.json](../../angular/angular.json), [server.ts](../../angular/server.ts) |
 | Assets | [public](../../angular/public) |

@@ -1,0 +1,100 @@
+:host {
+  display: block;
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin-top: clamp(0.5rem, 1.5vw, 1rem);
+  --marquee-accent: #176b67;
+  --marquee-gap: clamp(1rem, 2.5vw, 2rem);
+}
+
+:host-context(.dark-theme) {
+  --marquee-accent: #74ddd3;
+}
+
+.marquee {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  container-type: inline-size;
+  mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 56s linear infinite;
+  will-change: transform;
+}
+
+.marquee-group {
+  display: flex;
+  flex: none;
+  gap: var(--marquee-gap);
+  padding-right: var(--marquee-gap);
+}
+
+.marquee-item {
+  display: flex;
+  flex: 0 0 calc((100cqw - (4 * var(--marquee-gap))) / 5);
+  min-width: 0;
+  min-height: 8.75rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.8rem;
+  padding: 0.75rem 0.25rem;
+  text-align: center;
+}
+
+.marquee-emoji,
+.marquee-drone {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+}
+
+.marquee-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 2.5rem;
+  line-height: 3rem;
+}
+
+.marquee-drone {
+  color: var(--marquee-accent);
+}
+
+.marquee-text {
+  max-width: 12rem;
+  font-size: clamp(0.9375rem, 1.25vw, 1rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+@keyframes marquee-scroll {
+  to { transform: translateX(-50%); }
+}
+
+@media (max-width: 48rem) {
+  :host { --marquee-gap: 0.75rem; }
+
+  .marquee {
+    mask-image: linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%);
+  }
+
+  .marquee-item {
+    flex-basis: calc((100cqw - (2 * var(--marquee-gap))) / 3.35);
+    min-height: 10.5rem;
+    padding-inline: 0;
+  }
+
+  .marquee-text { font-size: 0.9375rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee { overflow-x: auto; mask-image: none; -webkit-mask-image: none; }
+  .marquee-track { animation: none; }
+  .marquee-group[aria-hidden="true"] { display: none; }
+}

@@ -1,0 +1,27 @@
+<div class="marquee" role="region" aria-label="Professional highlights">
+  <div class="marquee-track">
+    @for (duplicate of duplicateGroups; track duplicate) {
+      <div class="marquee-group" role="list" [attr.aria-hidden]="duplicate ? 'true' : null">
+        @for (highlight of highlights; track highlight.text) {
+          <div class="marquee-item" role="listitem">
+            @if (highlight.usesDrone) {
+              <svg class="marquee-drone" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+                  <path d="M23 29h18l5 9H18l5-9Z" fill="currentColor" fill-opacity=".16" />
+                  <path d="M27 38v5m10-5v5M19 26l-8-8m34 8 8-8M19 26h-8m34 0h8" />
+                  <ellipse cx="10" cy="17" rx="8" ry="3" />
+                  <ellipse cx="54" cy="17" rx="8" ry="3" />
+                  <path d="M24 45h16M32 29v-5" />
+                  <circle cx="32" cy="22" r="3" fill="currentColor" />
+                </g>
+              </svg>
+            } @else {
+              <span class="marquee-emoji" aria-hidden="true">{{ highlight.symbol }}</span>
+            }
+            <span class="marquee-text">{{ highlight.text }}</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

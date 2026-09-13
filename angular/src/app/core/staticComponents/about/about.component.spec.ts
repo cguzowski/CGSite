@@ -65,4 +65,18 @@ describe('AboutComponent', () => {
     expect(snapshot!.textContent).toContain('Hugging Face models');
     expect(snapshot!.textContent).toContain('Mindful activities');
   });
+
+  it('places a readable highlights marquee beneath the profile links', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    const profileLinks = host.querySelector<HTMLElement>('.profile-links');
+    const marquee = host.querySelector<HTMLElement>('app-about-marquee');
+
+    expect(profileLinks).not.toBeNull();
+    expect(marquee).not.toBeNull();
+    expect(profileLinks!.compareDocumentPosition(marquee!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(marquee!.textContent).toContain('Launched 5+ Systems to Production');
+    expect(marquee!.textContent).toContain('Georgia Tech OMSCS · Starting Spring 2027');
+    expect(marquee!.textContent).toContain('FAA Part 107 Certified Drone Pilot');
+    expect(marquee!.querySelector('svg')).not.toBeNull();
+  });
 });
