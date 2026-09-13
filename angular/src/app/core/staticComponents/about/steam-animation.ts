@@ -8,6 +8,20 @@ interface Swipe {
   sx: number; sy: number; length2: number;
 }
 
+const CENTRAL_STEAM_SPAWN_COUNT = 10;
+const CUP_RIM_EDGE_OFFSET = 77;
+
+export function getSteamSpawnOffsets(): number[] {
+  const central = Array.from({ length: CENTRAL_STEAM_SPAWN_COUNT }, (_, index) =>
+    ((index / (CENTRAL_STEAM_SPAWN_COUNT - 1)) - .5) * 76);
+  return [-CUP_RIM_EDGE_OFFSET, ...central, CUP_RIM_EDGE_OFFSET];
+}
+
+export function getSteamPlumeHeight(originY: number): number {
+  // The previous 4/3 plume is extended by another 50%.
+  return Math.max(20, originY - 12) * 2;
+}
+
 /** The supplied SteamCup simulation, contained in the About illustration. */
 export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGElement): () => void {
   const context = canvas.getContext('2d');
@@ -15,7 +29,7 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
   const ctx = context;
   const host = canvas.parentElement!;
     // The only tuning knobs: number of strands, rise speed, and swipe strength.
-    const settings = { density: 10, riseSpeed: 43, mouseStrength: 0.85 };
+    const settings = { riseSpeed: 43, mouseStrength: 0.85 };
     // Spread the light across wider edges instead of a bright, narrow core.
     // Keep three unfiltered passes; fewer strands offset the wider strokes.
     const steamLayers = [
@@ -28,14 +42,15 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
       speed: random(.8, 1.2), strength: random(.15, 1) });
     const flowKeys = ['offset', 'drift', 'speed', 'strength'] as const;
     const nodePool: SteamNode[] = [];
-    const strands = Array.from({ length: settings.density }, (_, i) => ({
+    const spawnOffsets = getSteamSpawnOffsets();
+    const strands = spawnOffsets.map((offset, i) => ({
       nodes: [] as SteamNode[], paths: new Array<Path2D | null>(13), levels: [] as number[],
-      phase: random(0, Math.PI * 2), offset: ((i / (settings.density - 1)) - .5) * 76,
+      phase: random(0, Math.PI * 2), offset,
       width: 2.5 + (i % 4) * .7, flow: randomFlow(), target: randomFlow(),
       changeIn: random(.5, 3), spawnIn: random(0, .06)
     }));
     let width = 300, height = 360, originX = 141, originY = 190, plumeHeight = 180;
-    const canvasLeft = -300, canvasTop = -150;
+    const canvasLeft = -300, canvasTop = -225;
     let canvasWidth = 900, canvasHeight = 660;
     let gradients: CanvasGradient[] = [];
     let time = 0, previous: number | null = null, lastDraw = 0, frameBudget = 0, animationId = 0;
@@ -52,7 +67,7 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
       height = hostBounds.height / scale;
       originX = (bounds.left - hostBounds.left + bounds.width * .47) / scale;
       originY = (bounds.top - hostBounds.top + bounds.height * (18 / 140)) / scale;
-      plumeHeight = Math.max(20, originY - 12) * (4 / 3);
+      plumeHeight = getSteamPlumeHeight(originY);
       // Keep the original cup coordinates while giving dispersed steam room to fade.
       canvasWidth = width - canvasLeft * 2;
       canvasHeight = height - canvasTop * 2;

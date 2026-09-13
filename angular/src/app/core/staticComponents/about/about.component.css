@@ -9,12 +9,6 @@
   --profile-accent: #74ddd3;
 }
 
-.about-container {
-  width: 100%;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-
 .flexpad {
   display: flow-root;
 }
@@ -80,15 +74,17 @@
 .about-container {
   display: grid;
   grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 3vw, 3rem);
+  gap: clamp(1.5rem, 3vw, 2rem);
   align-items: start;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .biography {
   margin: 0;
   font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
 }
-.coffee-slot { height: 21rem; min-width: 0; }
+.coffee-slot { height: 21rem; min-width: 0; margin-top: 5rem; }
 .coffee-placeholder { height: 100%; }
 
 .about-snapshot {
@@ -215,6 +211,7 @@
     grid-column: 2;
     grid-row: 1;
     height: clamp(12rem, 43vw, 16rem);
+    margin-top: 0;
   }
   .biography { grid-column: 1 / -1; grid-row: 2; }
   .about-snapshot {
