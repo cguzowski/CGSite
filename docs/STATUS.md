@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-09-12. Baseline branch: `modernizing-baseline`.
+Updated: 2026-09-13. Baseline branch: `modernizing-baseline`.
 
 ## Current decision
 
@@ -9,6 +9,11 @@ Website application stack: **TypeScript/Angular only**. Sections: **Home → Abo
 Cleanup is implemented in application code and indexes. Content/design refresh remains separate from this foundation change.
 
 ## Delivery and observed tree
+
+- Projects slider title/control refinement (September 13): each active card now has a bold, underlined, fixed-size title link above the deck with an external-link icon and a verified destination. The title is removed from the card body, the play triangle uses symmetric geometry so it is centered in its circle, and the numeric position remains available to assistive technology without being rendered visually. Full `npm test -- --watch=false --browsers=ChromeHeadless --progress=false` passed 25/25, and desktop plus 375×812 browser review confirmed the link hierarchy, centered play control, responsive containment, and absent visual counter. Production build passed with one prerendered route and a 399.49 kB initial browser bundle; the slider stylesheet is 2.51 kB and produces the existing 2 kB component-style warning while remaining below the 4 kB error budget. Physical touch and OS reduced-motion remain unverified.
+
+- Projects card-slider foundation (September 13): removed the former Raspberry Pi placeholder card and integrated the supplied standalone Swiper Element card slider. Five supplied hosting-story images appear in filename order: physical Raspberry Pi, Raspberry Pi Connect, registrar domain list, Cloudflare domain overview, and the live mobile site. Cards have concise visible-evidence text and useful alternatives without repeating the account email shown in a screenshot. Drag/swipe, previous/next buttons, Left/Right Arrow keys, explicit play/pause, end-state disabling, polite position feedback, timer cleanup, and reduced-motion zero-speed behavior are retained. This is reusable interaction groundwork, not completion of the planned Copilot or Atlas screenshot stories.
+- Projects verification: two new parent integration expectations failed against the old placeholder (2 failed, 1 passed), then focused Projects tests passed 5/5. Full `npm run test:ci` passed 23/23 with `CHROME_BIN` outside the sandbox after the sandboxed Chrome launch returned `spawn EPERM`. `npm run build` passed with one prerendered route, 398.19 kB initial browser bundle, and a separate 183.92 kB Swiper lazy chunk. Browser review at the normal desktop viewport and 375×812 confirmed the card stack, readable controls, responsive containment, and Next advancing position/content from 1/5 to 2/5. Physical drag/touch and OS reduced-motion remain unverified.
 
 - A2 steam length adjustment: plume rise distance increased by 4/3 (about 33%) at all viewport sizes; rise speed and cup dimensions retained. Existing canvas padding accommodates the longer plume. Styling-only tuning: no new tests; production build passed after sandbox spawn EPERM retry outside the sandbox. Visual review of the new length remains pending.
 
@@ -38,7 +43,7 @@ Cleanup is implemented in application code and indexes. Content/design refresh r
 - Blog component/model/service, associated tests, non-delivering form/upload scaffold, three empty component stubs and superseded planning text files removed.
 - Shell now renders Home, About, Projects, Contact with matching native navigation. Single page h1 lives in the new minimal Home component; About no longer duplicates it.
 - Contact contains the existing direct links; #connect is retained as a legacy target inside Contact. #blog is retired. Existing contact details/resume and biography still need C1/A1 reconciliation.
-- Projects remain a placeholder, without screenshot walkthroughs.
+- Projects now has a reusable screenshot-card slider, but the planned Copilot/Atlas walkthrough content remains incomplete.
 - Angular production configuration includes prerender/SSR. Previous read-only audit found static Nginx hosting plus cloudflared on Pi 3 Model B. No deployment changes made.
 
 ## User-confirmed content truth
