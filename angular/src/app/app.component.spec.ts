@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -55,5 +55,77 @@ describe('AppComponent', () => {
 
     expect(compiled.querySelector('footer')?.textContent)
       .toContain('Designed & Built by Christopher Guzowski © All Rights Reserved 2026');
+  });
+
+  it('expands each non-Home mobile title into section links and collapses on navigation or Escape', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('#home app-section-navigation')).toBeNull();
+    for (const id of ['about', 'projects', 'contact']) {
+      const bar = root.querySelector(`#${id} app-section-navigation`)!;
+      expect(bar).not.toBeNull();
+      const toggle = bar?.querySelector<HTMLButtonElement>('button');
+      expect(toggle).toBeTruthy();
+      if (!toggle) continue;
+      expect(toggle.textContent?.replace(/\s+/g, ' ').trim())
+        .toBe(({about: '• About • •', projects: '• • Projects •', contact: '• • • Contact'} as Record<string, string>)[id]);
+      toggle.click();
+      fixture.detectChanges();
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+      const links = bar.querySelectorAll<HTMLAnchorElement>('nav a');
+      expect(Array.from(links, link => link.getAttribute('href'))).toEqual(['#home', '#about', '#projects', '#contact']);
+      expect(bar.querySelector('[aria-current="location"]')?.textContent?.trim()).toBe(id[0].toUpperCase() + id.slice(1));
+      links[0].addEventListener('click', event => event.preventDefault());
+      links[0].click();
+      fixture.detectChanges();
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+      tick();
+      fixture.detectChanges();
+      expect(toggle.getAttribute('aria-expanded')).toBe('false');
+      toggle.click();
+      fixture.detectChanges();
+      links[1].dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+      fixture.detectChanges();
+      expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    }
+  }));
+
+  it('only promotes a section title to navigation after its section reaches the viewport top', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const projects = root.querySelector<HTMLElement>('#projects')!;
+    const projectsNavigation = projects.querySelector<HTMLElement>('app-section-navigation')!;
+
+    spyOn(projectsNavigation, 'getBoundingClientRect').and.returnValue({
+      top: 240,
+      bottom: 1240,
+      height: 1000,
+      left: 0,
+      right: 375,
+      width: 375,
+      x: 0,
+      y: 240,
+      toJSON: () => ({})
+    });
+    window.dispatchEvent(new Event('scroll'));
+    fixture.detectChanges();
+    expect(projectsNavigation.classList).not.toContain('stuck');
+
+    projectsNavigation.getBoundingClientRect = jasmine.createSpy().and.returnValue({
+      top: 0,
+      bottom: 1000,
+      height: 1000,
+      left: 0,
+      right: 375,
+      width: 375,
+      x: 0,
+      y: 0,
+      toJSON: () => ({})
+    });
+    window.dispatchEvent(new Event('scroll'));
+    fixture.detectChanges();
+    expect(projectsNavigation.classList).toContain('stuck');
   });
 });

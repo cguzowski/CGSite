@@ -105,13 +105,6 @@ main {
   .home-background { display: none; }
 }
 
-.section-heading {
-  font-size: clamp(2.25rem, 3vw, 2.75rem);
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  margin: 0 0 1.5rem;
-}
-
 .skip-link {
   position: absolute;
   top: 0.5rem;
