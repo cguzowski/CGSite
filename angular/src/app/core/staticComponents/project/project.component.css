@@ -1,26 +1,33 @@
-.container {
-    background: rgba(255, 255, 255, 0.1);
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    max-width: 400px;
+:host {
+  display: block;
+}
+
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  align-items: start;
+  gap: clamp(2.5rem, 6vw, 5rem);
+}
+
+.project-walkthrough {
+  min-width: 0;
+}
+
+.project-heading {
+  width: min(100%, 34rem);
+  margin: 0 auto 0.75rem;
+  text-align: center;
 }
 
 h3 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-img {
-    width: 100%;
-    max-width: 250px;
-    border-radius: 8px;
-    margin: 10px 0;
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  line-height: 1.2;
 }
 
 p {
-    font-size: 1.2em;
-    font-weight: 300;
+  margin: 0;
+  color: color-mix(in srgb, var(--page-text) 72%, var(--page-background));
+  font-size: 1rem;
+  line-height: 1.55;
 }

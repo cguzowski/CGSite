@@ -1,10 +1,14 @@
-<div class="container">
-    <h3> My Website is brought to you from my Raspberry Pi!</h3>
-    
-    <img src="assets/images/raspby.jpg" alt="Image of my RaspberryPi should be here">
-    
-
-
-    <p>More Projects I've made Coming Soon!</p>
-
+<div class="projects-container">
+  @for (project of projectWalkthroughs; track project.id) {
+    <article class="project-walkthrough" [attr.aria-labelledby]="project.id + '-heading'">
+      <header class="project-heading">
+        <h3 [id]="project.id + '-heading'">{{ project.title }}</h3>
+        <p>{{ project.summary }}</p>
+      </header>
+      <app-project-card-slider
+        [slides]="project.slides"
+        [ariaLabel]="project.title + ' walkthrough'"
+      />
+    </article>
+  }
 </div>

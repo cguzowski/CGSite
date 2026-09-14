@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 1;
+  pointer-events: none;
+  touch-action: pan-y;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(.8px);
+}
+
+.cup {
+  position: absolute;
+  width: 93.333%;
+  height: auto;
+  left: 3.333%;
+  bottom: 0;
+  pointer-events: none;
+}

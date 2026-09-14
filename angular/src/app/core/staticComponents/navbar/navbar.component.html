@@ -1,25 +1,24 @@
-<nav class="navbar">
-    <div class="navbar-brand">
-        <a href="#" class="logo-container">
-            <img src="assets/images/desertRose.jpg" alt="Logo Pic" class="logo-photo"/>
-        </a>
-    </div>
-    <span class="spacer"></span>
-    <button mat-icon-button (click)="toggleTheme()">
-      <mat-icon *ngIf="themeService.isDark(); else lightIcon">brightness_3</mat-icon>
-      <ng-template #lightIcon>
-        <mat-icon>wb_sunny</mat-icon>
-      </ng-template>
-    </button>
-    <button class="hamburgerMenu" (click)="toggleMenu()" id="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-    <ul class="nav-list" [class.active]="isMenuActive" id="navList">
-        <li class="nav-item" (click)="scrollToSection('about')">About</li>
-        <li class="nav-item" (click)="scrollToSection('connect')">Connect</li>
-        <li class="nav-item" (click)="scrollToSection('blog')">Blog</li>
-        <li class="nav-item" (click)="scrollToSection('projects')">Projects</li>
-    </ul>
+<nav aria-label="Main navigation">
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
 </nav>
+  <button type="button"
+    class="theme-toggle"
+    [attr.aria-label]="themeService.isDark() ? 'Use light theme' : 'Use dark theme'"
+    [attr.title]="themeService.isDark() ? 'Use light theme' : 'Use dark theme'"
+    (click)="themeService.toggleTheme()">
+    @if (themeService.isDark()) {
+      <svg data-icon="sun" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path>
+      </svg>
+    } @else {
+      <svg data-icon="moon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.5 15.3A8.8 8.8 0 0 1 8.7 3.5 9 9 0 1 0 20.5 15.3Z"></path>
+      </svg>
+    }
+  </button>
