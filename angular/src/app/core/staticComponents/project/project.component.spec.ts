@@ -24,11 +24,21 @@ describe('ProjectComponent', () => {
   it('renders each project walkthrough with its own reusable card slider', () => {
     const host: HTMLElement = fixture.nativeElement;
 
-    expect(host.querySelectorAll('.project-walkthrough').length).toBe(2);
-    expect(host.querySelectorAll('app-project-card-slider').length).toBe(2);
+    expect(host.querySelectorAll('.project-walkthrough').length).toBe(3);
+    expect(host.querySelectorAll('app-project-card-slider').length).toBe(3);
     expect(host.textContent).toContain('Self-hosted personal website');
+    expect(host.textContent).toContain('Payment Incident AI Copilot');
     expect(host.textContent).toContain('Atlas Capital Intelligence');
     expect(host.textContent).not.toContain('More Projects I\'ve made Coming Soon!');
+  });
+
+  it('places the Payment Incident AI Copilot walkthrough before Atlas', () => {
+    expect(component.projectWalkthroughs.map(({ id }) => id)).toEqual([
+      'self-hosted-website',
+      'payment-incident-ai-copilot',
+      'atlas-capital-intelligence',
+    ]);
+    expect(component.projectWalkthroughs[1].slides).toBe(component.paymentCopilotSlides);
   });
 
   it('supplies the five infrastructure screenshots in numeric filename order', () => {
@@ -68,6 +78,6 @@ describe('ProjectComponent', () => {
       '/assets/images/ACIPics/aiChat1Like5.jpg',
       '/assets/images/ACIPics/8aiChat2LikeExpert.jpg',
     ]);
-    expect(component.projectWalkthroughs[1].summary).toContain('planned');
+    expect(component.projectWalkthroughs[2].summary).toContain('planned');
   });
 });

@@ -8,6 +8,7 @@ Owner: projects agent. Slices P1–P3; homepage section 3, after Home and About.
 | Standalone card slider | [project-card-slider](../../angular/src/app/core/staticComponents/project/project-card-slider) |
 | Hosting-story images | [CGSitePhotos](../../angular/public/assets/images/CGSitePhotos) |
 | Atlas story images | [ACIPics](../../angular/public/assets/images/ACIPics) |
+| Payment Incident AI Copilot story images | [PayCoPilotPic](../../angular/public/assets/images/PayCoPilotPic) |
 | Detail-page integration | [routes](../../angular/src/app/app.routes.ts) — coordinate with foundation |
 
 The former single-card placeholder is removed. The Projects component is the collection-level container: each `ProjectWalkthrough` owns a project title, accurate summary and ordered `ProjectSlide` collection, and renders an independent instance of the standalone Swiper card slider. New projects should be added as another walkthrough rather than by duplicating slider markup or behavior.
@@ -18,7 +19,7 @@ Each active slide has a fixed-size title above the deck. Verified destinations r
 
 The five cards cover the physical Raspberry Pi host, Raspberry Pi Connect, domain registration, Cloudflare domain management, and the live mobile website. Text and alternatives describe only visible evidence and omit the account email visible in one source screenshot.
 
-No Copilot walkthrough or architecture interaction exists yet. Atlas's screenshot story completes the current presentation layer of P2, while its planned integrations remain out of scope for the portfolio. The reusable container/slider foundation does not complete P1 or P3.
+The Payment Incident AI Copilot is registered as a third walkthrough before Atlas, but its card copy and image alternatives remain incomplete, so P1 is not complete. No architecture interaction exists yet. Atlas's screenshot story completes the current presentation layer of P2, while its planned integrations remain out of scope for the portfolio. The reusable container/slider foundation does not complete P1 or P3.
 
 - **Walkthrough:** manually navigated screenshot plus explanation, readable on narrow screens.
 - **Under the hood:** optional browser-side architecture explanation.
