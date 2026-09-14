@@ -12,6 +12,7 @@ Owner: coordinator/foundation agent. Active slices F3, M1, R1; F1/F2 are histori
 | Global appearance / responsive typography | [styles.css](../../angular/src/styles.css), [app.component.css](../../angular/src/app/app.component.css), [custom-theme.scss](../../angular/src/custom-theme.scss) |
 | Theme behavior | [theme.service.ts](../../angular/src/app/core/singletonServices/theme.service.ts) |
 | Build / SSR | [package.json](../../angular/package.json), [angular.json](../../angular/angular.json), [server.ts](../../angular/server.ts) |
+| CI / static deployment | [GitHub Actions workflow](../../.github/workflows/ci-deploy.yml), [Pi deployment helper and setup](../../deploy/pi/README.md) |
 | Assets | [public](../../angular/public) |
 | Home background video | [Fuji WebM](../../angular/public/videos/fuji-water-stabilized-vp9-download.webm); sizing in app.component.css |
 | Verified environment / serving / baseline results | [F1 baseline](../BASELINE.md) |
@@ -22,4 +23,4 @@ F3 implemented Home, About, Projects, Contact and removed blog code/tests and th
 
 The shared shell includes a restrained, centered footer identifying Christopher Guzowski and the 2026 copyright notice. Its muted gray adapts to the selected theme. On mobile, only the section title that has reached the sticky viewport boundary adopts the dotted navigation treatment; later section titles retain their regular centered presentation. The active navigation uses a content-sized flat oval in both its collapsed and expanded states rather than a full-width strip.
 
-Live Nginx static serving was inspected read-only; release/rollback remain unverified. See baseline for evidence, and [roadmap](../ROADMAP.md) for migration protocol and release criteria.
+The D1 workflow builds and tests pull requests and `master` pushes on GitHub-hosted runners. Successful `master` builds pass only the static browser artifact to a labeled production Pi runner. A root-owned helper stages versioned releases, atomically switches the Nginx `browser` path, verifies Nginx and local HTTP serving, restores the previous target on failure, and retains rollback releases. Pi runner registration, GitHub environment protection, and the first automated rollout remain operator setup steps. See [the setup guide](../../deploy/pi/README.md).

@@ -1,4 +1,10 @@
-import { createSteamAnimation, getSteamPlumeHeight, getSteamSpawnOffsets } from './steam-animation';
+import {
+  createSteamAnimation,
+  createSteamTapSwipe,
+  getSteamPlumeHeight,
+  getSteamSpawnOffsets,
+  shouldTrackSteamPointer
+} from './steam-animation';
 
 describe('Steam layout', () => {
   it('keeps the ten central spawn points and adds one at each cup edge', () => {
@@ -36,4 +42,19 @@ describe('Steam drawing bounds', () => {
       }
     });
   }
+});
+
+describe('Steam pointer interaction', () => {
+  it('tracks touch pointers so a mobile swipe can disperse the steam', () => {
+    expect(shouldTrackSteamPointer('touch')).toBeTrue();
+  });
+
+  it('turns a tap near the plume into a short gust without cancelling scrolling', () => {
+    const gust = createSteamTapSwipe(140, 100, 150);
+
+    expect(gust.fromX).toBeLessThan(gust.x);
+    expect(gust.fromY).toBe(gust.y);
+    expect(gust.vx).toBeLessThan(0);
+    expect(gust.vy).toBeLessThan(0);
+  });
 });

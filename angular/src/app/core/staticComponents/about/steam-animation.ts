@@ -3,7 +3,7 @@ interface SteamNode {
   drift: number; strength: number; dx: number; dy: number; vx: number; vy: number;
   dispersal: number; segmentStrength: number; baseLevel: number;
 }
-interface Swipe {
+export interface SteamSwipe {
   fromX: number; fromY: number; x: number; y: number; vx: number; vy: number;
   sx: number; sy: number; length2: number;
 }
@@ -20,6 +20,25 @@ export function getSteamSpawnOffsets(): number[] {
 export function getSteamPlumeHeight(originY: number): number {
   // The previous 4/3 plume is extended by another 50%.
   return Math.max(20, originY - 12) * 2;
+}
+
+export function shouldTrackSteamPointer(pointerType: string): boolean {
+  return pointerType === '' || pointerType === 'mouse' || pointerType === 'pen' || pointerType === 'touch';
+}
+
+export function createSteamTapSwipe(x: number, y: number, originX: number): SteamSwipe {
+  const direction = x < originX ? -1 : 1;
+  return {
+    fromX: x - 12,
+    fromY: y,
+    x: x + 12,
+    y,
+    vx: direction * 900,
+    vy: -180,
+    sx: 0,
+    sy: 0,
+    length2: 1
+  };
 }
 
 /** The supplied SteamCup simulation, contained in the About illustration. */
@@ -56,7 +75,7 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
     let time = 0, previous: number | null = null, lastDraw = 0, frameBudget = 0, animationId = 0;
     const frameInterval = 1000 / 30;
     let pointer: { x: number; y: number; time: number } | null = null;
-    const swipes: Swipe[] = [];
+    const swipes: SteamSwipe[] = [];
 
     function resize() {
       const bounds = cup.getBoundingClientRect();
@@ -248,13 +267,23 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
       if (running()) animationId = requestAnimationFrame(frame);
     }
 
-    function movePointer(event: PointerEvent): void {
-      // Native touch gestures continue to scroll the page.
-      if (!running() || event.pointerType === 'touch') return;
+    function getPointerPosition(event: PointerEvent) {
       const bounds = host.getBoundingClientRect();
       const scale = bounds.width / width;
-      const next = { x: (event.clientX - bounds.left) / scale,
+      return { x: (event.clientX - bounds.left) / scale,
         y: (event.clientY - bounds.top) / scale, time: event.timeStamp };
+    }
+
+    function startPointer(event: PointerEvent): void {
+      if (!running() || !shouldTrackSteamPointer(event.pointerType)) return;
+      pointer = getPointerPosition(event);
+      swipes.push(createSteamTapSwipe(pointer.x, pointer.y, originX));
+      if (swipes.length > 8) swipes.shift();
+    }
+
+    function movePointer(event: PointerEvent): void {
+      if (!running() || !shouldTrackSteamPointer(event.pointerType)) return;
+      const next = getPointerPosition(event);
       if (pointer) {
         const dt = Math.max(.008, (next.time - pointer.time) / 1000);
         swipes.push({ fromX: pointer.x, fromY: pointer.y, x: next.x, y: next.y,
@@ -273,7 +302,10 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
     });
     resizeObserver.observe(host);
     visibilityObserver.observe(host);
+    document.addEventListener('pointerdown', startPointer, { passive: true });
     document.addEventListener('pointermove', movePointer, { passive: true });
+    document.addEventListener('pointerup', leavePointer, { passive: true });
+    document.addEventListener('pointercancel', leavePointer, { passive: true });
     document.documentElement.addEventListener('pointerleave', leavePointer);
     document.addEventListener('visibilitychange', syncPlayback);
     reducedMotion.addEventListener('change', syncPlayback);
@@ -284,7 +316,10 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
+      document.removeEventListener('pointerdown', startPointer);
       document.removeEventListener('pointermove', movePointer);
+      document.removeEventListener('pointerup', leavePointer);
+      document.removeEventListener('pointercancel', leavePointer);
       document.documentElement.removeEventListener('pointerleave', leavePointer);
       document.removeEventListener('visibilitychange', syncPlayback);
       reducedMotion.removeEventListener('change', syncPlayback);

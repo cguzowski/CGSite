@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly SITE_ROOT="/var/www/cguzowski.com/angular"
+readonly RELEASES_DIR="${SITE_ROOT}/releases"
+readonly CURRENT_PATH="${SITE_ROOT}/browser"
+readonly KEEP_RELEASES=3
+
+fail() {
+  printf 'deploy-cgsite: %s\n' "$*" >&2
+  exit 1
+}
+
+require_root() {
+  [[ ${EUID} -eq 0 ]] || fail "must run as root"
+}
+
+validate_release_id() {
+  [[ $1 =~ ^[0-9a-f]{40}-[1-9][0-9]*$ ]] || fail "invalid release id"
+}
+
+deploy_release() {
+  local source_dir=$1
+  local release_id=$2
+  local release_dir="${RELEASES_DIR}/${release_id}"
+  local pending_link="${SITE_ROOT}/.browser-${release_id}"
+  local previous_target=""
+
+  validate_release_id "${release_id}"
+  [[ -d ${source_dir} ]] || fail "artifact directory does not exist"
+  [[ -f ${source_dir}/index.html ]] || fail "artifact has no index.html"
+  [[ ! -e ${release_dir} ]] || fail "release already exists"
+
+  install -d -m 0755 "${RELEASES_DIR}"
+  install -d -m 0755 "${release_dir}"
+  cp -a "${source_dir}/." "${release_dir}/"
+  [[ -f ${release_dir}/index.html ]] || fail "staged release has no index.html"
+
+  if [[ -L ${CURRENT_PATH} ]]; then
+    previous_target=$(readlink -f "${CURRENT_PATH}")
+  elif [[ -d ${CURRENT_PATH} ]]; then
+    local legacy_dir="${RELEASES_DIR}/legacy-$(date -u +%Y%m%dT%H%M%SZ)"
+    mv "${CURRENT_PATH}" "${legacy_dir}"
+    previous_target="${legacy_dir}"
+  elif [[ -e ${CURRENT_PATH} ]]; then
+    fail "current path is neither a directory nor a symlink"
+  fi
+
+  ln -s "${release_dir}" "${pending_link}"
+  mv -Tf "${pending_link}" "${CURRENT_PATH}"
+
+  if ! nginx -t || ! curl --fail --silent --show-error --max-time 10 \
+    --header 'Host: cguzowski.com' http://127.0.0.1/ >/dev/null; then
+    if [[ -n ${previous_target} && -d ${previous_target} ]]; then
+      ln -s "${previous_target}" "${pending_link}"
+      mv -Tf "${pending_link}" "${CURRENT_PATH}"
+      nginx -t || true
+    fi
+    fail "verification failed; previous release restored"
+  fi
+
+  find "${RELEASES_DIR}" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' \
+    | sort -rn \
+    | tail -n "+$((KEEP_RELEASES + 1))" \
+    | cut -d' ' -f2- \
+    | while IFS= read -r old_release; do
+        [[ $(readlink -f "${CURRENT_PATH}") == "${old_release}" ]] || rm -rf -- "${old_release}"
+      done
+
+  printf 'Deployed %s\n' "${release_id}"
+}
+
+rollback_release() {
+  local current_target candidate pending_link
+  current_target=$(readlink -f "${CURRENT_PATH}")
+  candidate=$(find "${RELEASES_DIR}" -mindepth 1 -maxdepth 1 -type d ! -path "${current_target}" \
+    -printf '%T@ %p\n' | sort -rn | head -n 1 | cut -d' ' -f2-)
+  [[ -n ${candidate} && -f ${candidate}/index.html ]] || fail "no previous release is available"
+
+  pending_link="${SITE_ROOT}/.browser-rollback"
+  ln -s "${candidate}" "${pending_link}"
+  mv -Tf "${pending_link}" "${CURRENT_PATH}"
+  nginx -t || fail "Nginx configuration is invalid after rollback"
+  printf 'Rolled back to %s\n' "${candidate}"
+}
+
+require_root
+case "${1:-}" in
+  --rollback)
+    [[ $# -eq 1 ]] || fail "usage: deploy-cgsite --rollback"
+    rollback_release
+    ;;
+  *)
+    [[ $# -eq 2 ]] || fail "usage: deploy-cgsite ARTIFACT_DIR RELEASE_ID"
+    deploy_release "$1" "$2"
+    ;;
+esac
+
