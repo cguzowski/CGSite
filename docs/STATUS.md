@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-09-14. Baseline branch: `modernizing-baseline`.
+Updated: 2026-09-20. Baseline branch: `modernizing-baseline`.
 
 ## Current decision
 
@@ -9,6 +9,18 @@ Website application stack: **TypeScript/Angular only**. Sections: **Home → Abo
 Cleanup is implemented in application code and indexes. Content/design refresh remains separate from this foundation change.
 
 ## Delivery and observed tree
+
+- Mobile Home theme-control placement (September 20): at widths up to 30rem, the Home navigation now uses two columns so the light/dark theme button sits beside the first-row Home link while About, Projects and Contact remain stacked beneath it. Wider layouts retain their existing navigation presentation. The production build passed with a 391.28 kB initial browser bundle, one prerendered route and the existing component-style warnings; `git diff --check` passed. No deployment was performed.
+
+- Mobile Home introduction line split (September 20): preserved the desktop two-line name/role presentation and made the role resolve into separate “Full Stack Engineer” and “& Applied AI” lines at widths up to 30rem. The mobile name uses a smaller responsive size and no-wrap treatment so “Christopher Guzowski” remains one line. The full Angular suite passed 47/47 and the production build passed with a 391.22 kB initial browser bundle, one prerendered route and the existing component-style warnings. No deployment was performed.
+
+- Home Fuji credit placement (September 20): moved “Photos of Mt. Fuji by Christopher Guzowski” out of the upper-right introduction flow and anchored it to the visible WebM frame's lower-right inset for contained desktop and cropped portrait layouts. Also corrected the prior “Mt. Fujis” typo. The production build passed with a 390.92 kB initial browser bundle, one prerendered route and the existing component-style warnings. The isolated preview browser could not reach the local development server, so visual browser verification remains outstanding. No deployment was performed.
+
+- iOS marquee paint/loop correction (September 20): made the About highlights animation start from an explicit zero translation instead of WebKit's problematic implicit `transform: none` state. This prevents the clipped, composited track from disappearing until a later repaint or appearing to stop, while preserving the existing 56-second linear infinite loop on every browser. The focused regression first failed 1/1 and then passed 1/1; the full Angular suite passed 46/46 outside the sandbox after the known Chrome `spawn EPERM`, and the production build passed with a 390.79 kB initial browser bundle, one prerendered route and the existing component-style warnings. Physical iOS verification remains outstanding. No deployment was performed.
+
+- Mobile Home navigation tap feedback (September 20): suppressed the browser-painted tap-highlight rectangle on coarse-pointer viewports up to 48rem for the four hero navigation links and the light/dark theme button. The change does not alter hover or keyboard focus behavior. Styling-only correction; the production build passed with a 390.76 kB initial browser bundle, one prerendered route and the existing component-style warnings. No deployment was performed.
+
+- Mobile section navigation outside-tap close (September 20): expanded About, Projects and Contact navigation now collapses when a pointer is pressed anywhere outside its component while interactions inside remain open. The regression contract failed against the previous behavior and then passed 8/8; the full Angular suite passed 45/45 after a sandboxed Chrome launch returned `spawn EPERM`. The production build passed with a 390.62 kB initial browser bundle, one prerendered route and the existing component-style warnings. No deployment was performed.
 
 - SteamCup mobile swipe correction (September 19): added a passive Touch Events gesture path that keeps following the initiating finger even when a mobile browser cancels Pointer Events to perform native vertical scrolling. Touch movement now uses the same capped velocity calculation as mouse/pen movement, multi-touch list reordering does not switch the tracked finger, and Pointer Events remain the fallback where Touch Events are unavailable. The focused steam contract first failed at compile time, then passed 9/9; the full Angular suite passed 44/44 with ChromeHeadless outside the sandbox after a sandboxed Chrome launch returned `spawn EPERM`. The production build passed with a 390.36 kB initial browser bundle, one prerendered route and the existing component-style warnings. The isolated preview browser could not reach the local development server, so physical touch-device verification remains outstanding. No deployment was performed.
 

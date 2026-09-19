@@ -72,7 +72,17 @@ a:hover { text-decoration: underline; text-underline-offset: 0.3em; }
   }
 }
 
+@media (max-width: 48rem) and (pointer: coarse) {
+  a,
+  .theme-toggle { -webkit-tap-highlight-color: transparent; }
+}
+
 @media (max-width: 30rem) {
-  :host { flex-direction: column; }
+  :host {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: start;
+  }
+
   ul { grid-template-columns: max-content; }
 }

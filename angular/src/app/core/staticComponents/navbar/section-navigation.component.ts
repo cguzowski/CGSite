@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, Input, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, inject, Input, OnDestroy, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-section-navigation',
@@ -66,6 +66,14 @@ export class SectionNavigationComponent implements AfterViewInit, OnDestroy {
     // Keep the link visible until the browser completes its native fragment action.
     setTimeout(() => this.expanded = false);
   }
+
+  @HostListener('document:pointerdown', ['$event'])
+  collapseWhenPointerMovesOutside(event: PointerEvent): void {
+    if (this.expanded && !this.element.nativeElement.contains(event.target as Node)) {
+      this.expanded = false;
+    }
+  }
+
   readonly sections = [
     { id: 'home', label: 'Home' }, { id: 'about', label: 'About' },
     { id: 'projects', label: 'Projects' }, { id: 'contact', label: 'Contact' }
