@@ -10,7 +10,7 @@ Cleanup is implemented in application code and indexes. Content/design refresh r
 
 ## Delivery and observed tree
 
-- Mobile Home theme-control placement (September 20): at widths up to 30rem, the Home navigation now uses two columns so the light/dark theme button sits beside the first-row Home link while About, Projects and Contact remain stacked beneath it. Wider layouts retain their existing navigation presentation. The production build passed with a 391.28 kB initial browser bundle, one prerendered route and the existing component-style warnings; `git diff --check` passed. No deployment was performed.
+- Home theme-control placement and presentation (September 20): the light/dark theme button no longer paints a circular border at any viewport size. At widths up to 30rem, the Home navigation uses two columns so the button sits beside the first-row Home link while About, Projects and Contact remain stacked beneath it. Wider layouts retain their existing navigation placement. The production build passed with a 391.28 kB initial browser bundle, one prerendered route and the existing component-style warnings; `git diff --check` passed. No deployment was performed.
 
 - Mobile Home introduction line split (September 20): preserved the desktop two-line name/role presentation and made the role resolve into separate “Full Stack Engineer” and “& Applied AI” lines at widths up to 30rem. The mobile name uses a smaller responsive size and no-wrap treatment so “Christopher Guzowski” remains one line. The full Angular suite passed 47/47 and the production build passed with a 391.22 kB initial browser bundle, one prerendered route and the existing component-style warnings. No deployment was performed.
 
