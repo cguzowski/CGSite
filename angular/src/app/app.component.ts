@@ -16,5 +16,29 @@ import { SectionNavigationComponent } from './core/staticComponents/navbar/secti
 })
 export class AppComponent {
   videoRatio = 16 / 9;
-  heroVideoPlaying = false;
+  iosPlaybackBlocked = false;
+
+  tryPlayHeroVideo(video: HTMLVideoElement): void {
+    if (!this.isIosDevice()) return;
+
+    video.muted = true;
+
+    let playback: Promise<void> | undefined;
+    try {
+      playback = video.play();
+    } catch {
+      this.iosPlaybackBlocked = true;
+      return;
+    }
+
+    playback?.catch(() => this.iosPlaybackBlocked = true);
+  }
+
+  private isIosDevice(): boolean {
+    if (typeof navigator === 'undefined') return false;
+
+    const conventionalIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const desktopModeIpad = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+    return conventionalIos || desktopModeIpad;
+  }
 }

@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, flushMicrotasks, TestBed, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -21,28 +21,58 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('h1')?.textContent).toContain('Christopher Guzowski');
   });
 
-  it('keeps a static Fuji fallback until the decorative hero video is actually playing', () => {
+  it('does not load a fallback during normal hero playback', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const video = compiled.querySelector<HTMLVideoElement>('.home-background');
-    const fallback = compiled.querySelector<HTMLImageElement>('.home-background-fallback');
 
+    expect(compiled.querySelector('.home-background-fallback')).toBeNull();
+  });
+
+  it('loads the static fallback only when iOS rejects hero autoplay', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const app = fixture.componentInstance;
+    const compiled = fixture.nativeElement as HTMLElement;
+    const video = compiled.querySelector<HTMLVideoElement>('.home-background')!;
+    spyOnProperty(navigator, 'userAgent', 'get').and.returnValue(
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1'
+    );
+    spyOn(video, 'play').and.callFake(
+      () => Promise.reject(new DOMException('Autoplay blocked', 'NotAllowedError'))
+    );
+
+    app.tryPlayHeroVideo(video);
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    const fallback = compiled.querySelector<HTMLImageElement>('.home-background-fallback');
     expect(fallback).not.toBeNull();
     expect(fallback?.getAttribute('alt')).toBe('');
-    expect(video?.classList).not.toContain('is-playing');
+    expect(video.classList).toContain('ios-playback-blocked');
+  }));
 
-    video?.dispatchEvent(new Event('playing'));
+  it('does not probe or load the iOS fallback on another platform', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const app = fixture.componentInstance;
+    const compiled = fixture.nativeElement as HTMLElement;
+    const video = compiled.querySelector<HTMLVideoElement>('.home-background')!;
+    spyOnProperty(navigator, 'userAgent', 'get').and.returnValue(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/153.0.0.0 Safari/537.36'
+    );
+    spyOn(video, 'play').and.callFake(
+      () => Promise.reject(new DOMException('Autoplay blocked', 'NotAllowedError'))
+    );
+
+    app.tryPlayHeroVideo(video);
+    flushMicrotasks();
     fixture.detectChanges();
 
-    expect(video?.classList).toContain('is-playing');
-    expect(video?.hasAttribute('controls')).toBeFalse();
-
-    video?.dispatchEvent(new Event('pause'));
-    fixture.detectChanges();
-
-    expect(video?.classList).not.toContain('is-playing');
-  });
+    expect(compiled.querySelector('.home-background-fallback')).toBeNull();
+    expect(video.classList).not.toContain('ios-playback-blocked');
+    expect(video.play).not.toHaveBeenCalled();
+  }));
 
   it('provides separate mobile lines for the Home role without splitting the name', () => {
     const fixture = TestBed.createComponent(AppComponent);
