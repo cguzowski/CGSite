@@ -7,6 +7,16 @@ export interface SteamSwipe {
   fromX: number; fromY: number; x: number; y: number; vx: number; vy: number;
   sx: number; sy: number; length2: number;
 }
+export interface SteamInputPosition { x: number; y: number; time: number; }
+
+export function findTrackedTouch<T extends { identifier: number }>(
+  touches: ArrayLike<T>, identifier: number
+): T | null {
+  for (let index = 0; index < touches.length; index++) {
+    if (touches[index].identifier === identifier) return touches[index];
+  }
+  return null;
+}
 
 const CENTRAL_STEAM_SPAWN_COUNT = 10;
 const CUP_RIM_EDGE_OFFSET = 77;
@@ -35,6 +45,21 @@ export function createSteamTapSwipe(x: number, y: number, originX: number): Stea
     y,
     vx: direction * 900,
     vy: -180,
+    sx: 0,
+    sy: 0,
+    length2: 1
+  };
+}
+
+export function createSteamSwipe(from: SteamInputPosition, to: SteamInputPosition): SteamSwipe {
+  const dt = Math.max(.008, (to.time - from.time) / 1000);
+  return {
+    fromX: from.x,
+    fromY: from.y,
+    x: to.x,
+    y: to.y,
+    vx: Math.max(-1800, Math.min(1800, (to.x - from.x) / dt)),
+    vy: Math.max(-1800, Math.min(1800, (to.y - from.y) / dt)),
     sx: 0,
     sy: 0,
     length2: 1
@@ -74,7 +99,10 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
     let gradients: CanvasGradient[] = [];
     let time = 0, previous: number | null = null, lastDraw = 0, frameBudget = 0, animationId = 0;
     const frameInterval = 1000 / 30;
-    let pointer: { x: number; y: number; time: number } | null = null;
+    const touchEventsSupported = typeof TouchEvent !== 'undefined';
+    let pointer: SteamInputPosition | null = null;
+    let touchPointer: SteamInputPosition | null = null;
+    let touchIdentifier: number | null = null;
     const swipes: SteamSwipe[] = [];
 
     function resize() {
@@ -262,39 +290,70 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
       previous = null;
       frameBudget = 0;
       pointer = null;
+      touchPointer = null;
+      touchIdentifier = null;
       swipes.length = 0;
       if (reducedMotion.matches) ctx.clearRect(canvasLeft, canvasTop, canvasWidth, canvasHeight);
       if (running()) animationId = requestAnimationFrame(frame);
     }
 
-    function getPointerPosition(event: PointerEvent) {
+    function getInputPosition(
+      input: Pick<PointerEvent, 'clientX' | 'clientY'> | Pick<Touch, 'clientX' | 'clientY'>,
+      time: number
+    ): SteamInputPosition {
       const bounds = host.getBoundingClientRect();
       const scale = bounds.width / width;
-      return { x: (event.clientX - bounds.left) / scale,
-        y: (event.clientY - bounds.top) / scale, time: event.timeStamp };
+      return { x: (input.clientX - bounds.left) / scale,
+        y: (input.clientY - bounds.top) / scale, time };
     }
 
     function startPointer(event: PointerEvent): void {
+      if (event.pointerType === 'touch' && touchEventsSupported) return;
       if (!running() || !shouldTrackSteamPointer(event.pointerType)) return;
-      pointer = getPointerPosition(event);
+      pointer = getInputPosition(event, event.timeStamp);
       swipes.push(createSteamTapSwipe(pointer.x, pointer.y, originX));
       if (swipes.length > 8) swipes.shift();
     }
 
     function movePointer(event: PointerEvent): void {
+      if (event.pointerType === 'touch' && touchEventsSupported) return;
       if (!running() || !shouldTrackSteamPointer(event.pointerType)) return;
-      const next = getPointerPosition(event);
+      const next = getInputPosition(event, event.timeStamp);
       if (pointer) {
-        const dt = Math.max(.008, (next.time - pointer.time) / 1000);
-        swipes.push({ fromX: pointer.x, fromY: pointer.y, x: next.x, y: next.y,
-          vx: Math.max(-1800, Math.min(1800, (next.x - pointer.x) / dt)),
-          vy: Math.max(-1800, Math.min(1800, (next.y - pointer.y) / dt)),
-          sx: 0, sy: 0, length2: 1 });
+        swipes.push(createSteamSwipe(pointer, next));
         if (swipes.length > 8) swipes.shift();
       }
       pointer = next;
     }
     const leavePointer = () => { pointer = null; };
+
+    function startTouch(event: TouchEvent): void {
+      if (!running() || touchIdentifier !== null) return;
+      const touch = event.changedTouches[0];
+      if (!touch) return;
+      touchIdentifier = touch.identifier;
+      touchPointer = getInputPosition(touch, event.timeStamp);
+      swipes.push(createSteamTapSwipe(touchPointer.x, touchPointer.y, originX));
+      if (swipes.length > 8) swipes.shift();
+    }
+
+    function moveTouch(event: TouchEvent): void {
+      if (!running() || touchIdentifier === null) return;
+      const touch = findTrackedTouch(event.touches, touchIdentifier);
+      if (!touch) return;
+      const next = getInputPosition(touch, event.timeStamp);
+      if (touchPointer) {
+        swipes.push(createSteamSwipe(touchPointer, next));
+        if (swipes.length > 8) swipes.shift();
+      }
+      touchPointer = next;
+    }
+
+    function endTouch(event: TouchEvent): void {
+      if (touchIdentifier === null || !findTrackedTouch(event.changedTouches, touchIdentifier)) return;
+      touchIdentifier = null;
+      touchPointer = null;
+    }
     const resizeObserver = new ResizeObserver(resize);
     const visibilityObserver = new IntersectionObserver(entries => {
       visible = entries.some(entry => entry.isIntersecting);
@@ -307,6 +366,12 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
     document.addEventListener('pointerup', leavePointer, { passive: true });
     document.addEventListener('pointercancel', leavePointer, { passive: true });
     document.documentElement.addEventListener('pointerleave', leavePointer);
+    // Passive Touch Events keep reporting a finger during native pan-y scrolling,
+    // after mobile browsers have cancelled the equivalent Pointer Events stream.
+    document.addEventListener('touchstart', startTouch, { passive: true });
+    document.addEventListener('touchmove', moveTouch, { passive: true });
+    document.addEventListener('touchend', endTouch, { passive: true });
+    document.addEventListener('touchcancel', endTouch, { passive: true });
     document.addEventListener('visibilitychange', syncPlayback);
     reducedMotion.addEventListener('change', syncPlayback);
     resize();
@@ -321,6 +386,10 @@ export function createSteamAnimation(canvas: HTMLCanvasElement, cup: SVGSVGEleme
       document.removeEventListener('pointerup', leavePointer);
       document.removeEventListener('pointercancel', leavePointer);
       document.documentElement.removeEventListener('pointerleave', leavePointer);
+      document.removeEventListener('touchstart', startTouch);
+      document.removeEventListener('touchmove', moveTouch);
+      document.removeEventListener('touchend', endTouch);
+      document.removeEventListener('touchcancel', endTouch);
       document.removeEventListener('visibilitychange', syncPlayback);
       reducedMotion.removeEventListener('change', syncPlayback);
     };
