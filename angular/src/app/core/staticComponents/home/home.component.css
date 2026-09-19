@@ -1,4 +1,22 @@
 :host { display: block; }
 h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -0.035em; margin: 0 0 0.65rem; }
 p { font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem); line-height: 1.5; margin: 0 0 0.65rem; }
-.photo-credit { font-size: 0.9rem; line-height: 1.5; }
+.photo-credit {
+  position: absolute;
+  top: calc(var(--image-height) - 2.35rem);
+  right: 0;
+  width: max-content;
+  max-width: calc(var(--image-width) - 2rem);
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 30rem) {
+  .home-name {
+    font-size: clamp(1.35rem, 6.4vw, 1.75rem);
+    white-space: nowrap;
+  }
+
+  .home-role span { display: block; }
+}

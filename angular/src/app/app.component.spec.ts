@@ -21,6 +21,16 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('h1')?.textContent).toContain('Christopher Guzowski');
   });
 
+  it('provides separate mobile lines for the Home role without splitting the name', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const home = fixture.nativeElement.querySelector('app-home') as HTMLElement;
+
+    expect(home.querySelector('h1')?.classList).toContain('home-name');
+    expect(home.querySelector('.role-primary')?.textContent?.trim()).toBe('Full Stack Engineer');
+    expect(home.querySelector('.role-secondary')?.textContent?.trim()).toBe('& Applied AI');
+  });
+
   it('presents Home, About, Projects and Contact in that order', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
@@ -90,6 +100,27 @@ describe('AppComponent', () => {
       expect(toggle.getAttribute('aria-expanded')).toBe('false');
     }
   }));
+
+  it('collapses an expanded mobile section navigation when tapping outside it', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const bar = root.querySelector<HTMLElement>('#about app-section-navigation')!;
+    const toggle = bar.querySelector<HTMLButtonElement>('button')!;
+
+    toggle.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+
+    bar.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+
+    root.querySelector<HTMLElement>('#projects')!
+      .dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+  });
 
   it('only promotes a section title to navigation after its section reaches the viewport top', () => {
     const fixture = TestBed.createComponent(AppComponent);
