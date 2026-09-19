@@ -29,20 +29,20 @@ describe('ConnectComponent', () => {
     expect(items.map((item) => item.querySelector('.contact-item__title')?.textContent?.trim())).toEqual([
       'Where you can find me',
       'Email me at',
-      "Let's Connect",
+      'Call Me',
       'GitHub',
-      'Resume',
-      'Call me'
+      'Check out my Resume!',
+      "Let's Connect"
     ]);
 
     const links = Array.from(host.querySelectorAll<HTMLAnchorElement>('.contact-item[href]'));
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       'https://www.google.com/maps/search/?api=1&query=New+York+City%2C+New+York',
       'mailto:cguzowski.dev@gmail.com',
-      'https://www.linkedin.com/in/chris-guzowski/',
+      'tel:+16464272324',
       'https://github.com/cguzowski',
       'assets/documents/resume.pdf',
-      'tel:+16464272324'
+      'https://www.linkedin.com/in/chris-guzowski/'
     ]);
     expect(links[4].hasAttribute('download')).toBeTrue();
 
@@ -51,17 +51,17 @@ describe('ConnectComponent', () => {
       expect(item.querySelector('.contact-item__copy')).not.toBeNull();
     }
 
-    for (const link of [links[0], links[2], links[3]]) {
+    for (const link of [links[0], links[3], links[5]]) {
       expect(link.getAttribute('target')).toBe('_blank');
       expect(link.getAttribute('rel')).toBe('noopener noreferrer');
     }
   });
 
-  it('offers a centered semantic link back to the Home section', () => {
+  it('offers a centered icon link back to the Home section', () => {
     const backToTop = fixture.nativeElement.querySelector('.back-to-top') as HTMLAnchorElement | null;
 
     expect(backToTop).not.toBeNull();
-    expect(backToTop?.textContent?.trim()).toBe('Back to top');
+    expect(backToTop?.textContent?.trim()).toBe('');
     expect(backToTop?.getAttribute('href')).toBe('#home');
     expect(backToTop?.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
   });
