@@ -16,4 +16,5 @@ import { SectionNavigationComponent } from './core/staticComponents/navbar/secti
 })
 export class AppComponent {
   videoRatio = 16 / 9;
+  heroVideoPlaying = false;
 }

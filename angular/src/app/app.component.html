@@ -1,8 +1,11 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
 <main id="main-content" tabindex="-1">
   <section id="home" class="section" aria-label="Home" tabindex="-1">
-    <video #backgroundVideo class="home-background" autoplay loop muted playsinline preload="metadata" aria-hidden="true" tabindex="-1"
-      (loadedmetadata)="videoRatio = backgroundVideo.videoWidth / backgroundVideo.videoHeight">
+    <img class="home-background-fallback" src="assets/images/fuji-water-fallback.jpg" alt="" aria-hidden="true">
+    <video #backgroundVideo class="home-background" [class.is-playing]="heroVideoPlaying" autoplay loop muted playsinline
+      preload="metadata" aria-hidden="true" tabindex="-1"
+      (loadedmetadata)="videoRatio = backgroundVideo.videoWidth / backgroundVideo.videoHeight"
+      (playing)="heroVideoPlaying = true" (pause)="heroVideoPlaying = false">
       <source src="videos/fuji-water-stabilized-vp9-download.webm" type="video/webm">
     </video>
     <app-home></app-home>

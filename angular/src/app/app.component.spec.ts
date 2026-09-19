@@ -21,6 +21,29 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('h1')?.textContent).toContain('Christopher Guzowski');
   });
 
+  it('keeps a static Fuji fallback until the decorative hero video is actually playing', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const video = compiled.querySelector<HTMLVideoElement>('.home-background');
+    const fallback = compiled.querySelector<HTMLImageElement>('.home-background-fallback');
+
+    expect(fallback).not.toBeNull();
+    expect(fallback?.getAttribute('alt')).toBe('');
+    expect(video?.classList).not.toContain('is-playing');
+
+    video?.dispatchEvent(new Event('playing'));
+    fixture.detectChanges();
+
+    expect(video?.classList).toContain('is-playing');
+    expect(video?.hasAttribute('controls')).toBeFalse();
+
+    video?.dispatchEvent(new Event('pause'));
+    fixture.detectChanges();
+
+    expect(video?.classList).not.toContain('is-playing');
+  });
+
   it('provides separate mobile lines for the Home role without splitting the name', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();

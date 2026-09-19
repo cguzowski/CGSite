@@ -28,6 +28,12 @@
   will-change: transform;
 }
 
+.marquee--native-loop .marquee-track {
+  animation: none;
+  transform: translateX(0);
+  will-change: auto;
+}
+
 .marquee-group {
   display: flex;
   flex: none;
