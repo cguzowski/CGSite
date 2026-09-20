@@ -48,13 +48,16 @@
 .marquee-group {
   display: flex;
   flex: none;
+  width: max-content;
   gap: var(--marquee-gap);
   padding-right: var(--marquee-gap);
 }
 
 .marquee-item {
   display: flex;
-  flex: 0 0 calc((100cqw - (4 * var(--marquee-gap))) / 5);
+  /* A definite width also contributes to WebKit's intrinsic group/scroll width. */
+  flex: none;
+  width: calc((100cqw - (4 * var(--marquee-gap))) / 5);
   min-width: 0;
   min-height: 8.75rem;
   flex-direction: column;
@@ -103,7 +106,7 @@
   }
 
   .marquee-item {
-    flex-basis: calc((100cqw - (2 * var(--marquee-gap))) / 3.35);
+    width: calc((100cqw - (2 * var(--marquee-gap))) / 3.35);
     min-height: 10.5rem;
     padding-inline: 0;
   }

@@ -54,6 +54,17 @@ describe('AppComponent', () => {
     expect(video.classList).toContain('ios-playback-blocked');
   }));
 
+  it('keeps the iOS fallback flush with the viewport edges', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.componentInstance.iosPlaybackBlocked = true;
+    fixture.detectChanges();
+    const fallback = fixture.nativeElement.querySelector('.home-background-fallback') as HTMLImageElement;
+    const bounds = fallback.getBoundingClientRect();
+
+    expect(bounds.left).toBeLessThanOrEqual(0);
+    expect(bounds.right).toBeGreaterThanOrEqual(document.documentElement.clientWidth);
+  });
+
   it('does not probe or load the iOS fallback on another platform', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();

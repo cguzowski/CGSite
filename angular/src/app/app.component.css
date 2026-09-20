@@ -50,6 +50,8 @@ main {
 #home {
   position: relative;
   isolation: isolate;
+  width: 100vw;
+  margin-left: calc((100% - 100vw) / 2);
   min-height: max(500px, 100vh);
   min-height: max(500px, 100dvh);
   padding-top: calc(var(--image-top) + 1rem);
@@ -90,6 +92,8 @@ main {
 }
 
 .home-background.ios-playback-blocked { display: none; }
+
+.home-background-fallback { max-width: none; }
 
 @media (max-aspect-ratio: 1/1) {
   :host {

@@ -84,6 +84,28 @@ describe('AboutMarqueeComponent', () => {
     expect(next.left - last.right).toBeCloseTo(gap, 0);
   });
 
+  it('sizes each loop group to its rendered items and keeps scrolling across repeated cycles', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    host.style.width = '375px';
+    const marquee = host.querySelector<HTMLElement>('.marquee')!;
+    const group = host.querySelector<HTMLElement>('.marquee-group')!;
+    const frames: FrameRequestCallback[] = [];
+    const cleanup = createIOSMarqueeFallback(marquee, group, callback => {
+      frames.push(callback);
+      return frames.length;
+    }, () => undefined);
+    const width = group.getBoundingClientRect().width;
+    const last = group.lastElementChild!.getBoundingClientRect();
+    const gap = parseFloat(getComputedStyle(group).columnGap);
+    expect(last.right + gap - group.getBoundingClientRect().left).toBeCloseTo(width, 0);
+    for (const timestamp of [0, 55_999, 56_000, 111_999, 112_000]) {
+      frames.shift()!(timestamp);
+      const expected = width * (1 + (timestamp % 56_000) / 56_000);
+      expect(marquee.scrollLeft).toBeCloseTo(expected, 0);
+    }
+    cleanup();
+  });
+
   it('renders surrounding copies so the iOS loop never reaches an unpainted edge', () => {
     const groups = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.marquee-group'));
 
