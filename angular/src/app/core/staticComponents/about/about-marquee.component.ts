@@ -12,11 +12,11 @@ const MARQUEE_DURATION_MS = 56_000;
 type RequestFrame = (callback: FrameRequestCallback) => number;
 type CancelFrame = (handle: number) => void;
 
-export function shouldUseIOSMarqueeFallback(supportsWebkitTouchCallout: boolean, maxTouchPoints: number): boolean {
-  return supportsWebkitTouchCallout && maxTouchPoints > 0;
+export function shouldUseIOSMarqueeFallback(platform: string, maxTouchPoints: number): boolean {
+  return /^iP(?:hone|ad|od)$/.test(platform) || (platform === 'MacIntel' && maxTouchPoints > 1);
 }
 
-/** Use native scrolling on iOS so WebKit paints the offscreen duplicate before it enters view. */
+/** Use native scrolling between buffered copies so iOS paints the next group before it enters view. */
 export function createIOSMarqueeFallback(
   marquee: HTMLElement,
   group: HTMLElement,
@@ -30,11 +30,12 @@ export function createIOSMarqueeFallback(
     startTime ??= timestamp;
     const groupWidth = group.getBoundingClientRect().width;
     const progress = ((timestamp - startTime) % MARQUEE_DURATION_MS) / MARQUEE_DURATION_MS;
-    marquee.scrollLeft = progress * groupWidth;
+    marquee.scrollLeft = groupWidth + progress * groupWidth;
     frameId = requestFrame(advance);
   };
 
   marquee.classList.add('marquee--native-loop');
+  marquee.scrollLeft = group.getBoundingClientRect().width;
   frameId = requestFrame(advance);
 
   return () => {
@@ -61,7 +62,7 @@ export class AboutMarqueeComponent {
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly duplicateGroups = [false, true] as const;
+  readonly duplicateGroups = [false, true, true, true] as const;
   readonly highlights: readonly AboutHighlight[] = [
     { symbol: '🚀', text: 'Launched 5+ Systems to Production' },
     { symbol: '📜', text: 'Magna Cum Laude' },
@@ -78,7 +79,7 @@ export class AboutMarqueeComponent {
   constructor() {
     afterNextRender(() => {
       if (!shouldUseIOSMarqueeFallback(
-        CSS.supports('-webkit-touch-callout', 'none'),
+        navigator.platform,
         navigator.maxTouchPoints
       )) {
         return;

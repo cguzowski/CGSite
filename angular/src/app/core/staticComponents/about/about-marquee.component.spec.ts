@@ -29,13 +29,15 @@ describe('AboutMarqueeComponent', () => {
     expect(keyframes[keyframes.length - 1]['transform']).not.toBe('none');
   });
 
-  it('limits the native scrolling fallback to touch-based WebKit browsers', () => {
-    expect(shouldUseIOSMarqueeFallback(true, 5)).toBeTrue();
-    expect(shouldUseIOSMarqueeFallback(true, 0)).toBeFalse();
-    expect(shouldUseIOSMarqueeFallback(false, 5)).toBeFalse();
+  it('recognizes iOS and iPad desktop mode without relying on CSS feature detection', () => {
+    expect(shouldUseIOSMarqueeFallback('iPhone', 5)).toBeTrue();
+    expect(shouldUseIOSMarqueeFallback('iPad', 5)).toBeTrue();
+    expect(shouldUseIOSMarqueeFallback('MacIntel', 5)).toBeTrue();
+    expect(shouldUseIOSMarqueeFallback('MacIntel', 0)).toBeFalse();
+    expect(shouldUseIOSMarqueeFallback('Linux armv8l', 5)).toBeFalse();
   });
 
-  it('scrolls by one measured group before wrapping to its identical copy', () => {
+  it('loops between buffered copies instead of either edge of the scroll content', () => {
     const marquee = document.createElement('div');
     const group = document.createElement('div');
     const frames: FrameRequestCallback[] = [];
@@ -57,12 +59,21 @@ describe('AboutMarqueeComponent', () => {
     );
 
     frames.shift()!(1000);
+    expect(marquee.scrollLeft).toBe(1000);
+
     frames.shift()!(56_999);
     expect(marquee.classList).toContain('marquee--native-loop');
-    expect(marquee.scrollLeft).toBeCloseTo(999.98, 1);
+    expect(marquee.scrollLeft).toBeCloseTo(1999.98, 1);
 
     frames.shift()!(57_000);
-    expect(marquee.scrollLeft).toBe(0);
+    expect(marquee.scrollLeft).toBe(1000);
     cleanup();
+  });
+
+  it('renders surrounding copies so the iOS loop never reaches an unpainted edge', () => {
+    const groups = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.marquee-group'));
+
+    expect(groups.length).toBe(4);
+    expect(groups.filter(group => group.getAttribute('aria-hidden') === 'true').length).toBe(3);
   });
 });

@@ -1,6 +1,6 @@
 <div class="marquee" role="region" aria-label="Professional highlights">
   <div class="marquee-track">
-    @for (duplicate of duplicateGroups; track duplicate) {
+    @for (duplicate of duplicateGroups; track $index) {
       <div class="marquee-group" role="list" [attr.aria-hidden]="duplicate ? 'true' : null">
         @for (highlight of highlights; track highlight.text) {
           <div class="marquee-item" role="listitem">
