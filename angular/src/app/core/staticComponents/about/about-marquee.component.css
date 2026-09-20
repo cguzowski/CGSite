@@ -28,9 +28,20 @@
   will-change: transform;
 }
 
+.marquee--native-loop {
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: auto;
+}
+
+.marquee--native-loop::-webkit-scrollbar {
+  display: none;
+}
+
+/* Native scrolling must paint the full strip, without a transformed WebKit layer. */
 .marquee--native-loop .marquee-track {
   animation: none;
-  transform: translateX(0);
+  transform: none;
   will-change: auto;
 }
 

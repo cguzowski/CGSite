@@ -70,6 +70,20 @@ describe('AboutMarqueeComponent', () => {
     cleanup();
   });
 
+  it('joins the last iOS item directly to the first item of the next copy', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    host.style.width = '375px';
+    host.querySelector('.marquee')!.classList.add('marquee--native-loop');
+    const track = host.querySelector<HTMLElement>('.marquee-track')!;
+    expect(getComputedStyle(track).transform).toBe('none');
+    expect(getComputedStyle(host.querySelector('.marquee')!).overflowX).toBe('auto');
+    const groups = host.querySelectorAll<HTMLElement>('.marquee-group');
+    const last = groups[0].lastElementChild!.getBoundingClientRect();
+    const next = groups[1].firstElementChild!.getBoundingClientRect();
+    const gap = parseFloat(getComputedStyle(groups[0]).columnGap);
+    expect(next.left - last.right).toBeCloseTo(gap, 0);
+  });
+
   it('renders surrounding copies so the iOS loop never reaches an unpainted edge', () => {
     const groups = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.marquee-group'));
 
