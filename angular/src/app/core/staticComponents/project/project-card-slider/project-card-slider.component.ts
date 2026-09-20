@@ -12,6 +12,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import type { SwiperContainer } from 'swiper/element';
+import { ResponsiveImageDirective } from '../../../media/responsive-image.directive';
 
 export interface ProjectSlide {
   title: string;
@@ -25,7 +26,7 @@ export interface ProjectSlide {
 @Component({
   selector: 'app-project-card-slider',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ResponsiveImageDirective],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './project-card-slider.component.html',
   styleUrl: './project-card-slider.component.css',
@@ -40,13 +41,26 @@ export class ProjectCardSliderComponent implements AfterViewInit, OnDestroy {
   readonly atStart = signal(true);
   readonly atEnd = signal(true);
   readonly ready = signal(false);
+  readonly requestedImages = signal<ReadonlySet<number>>(new Set());
 
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private visibilityObserver?: IntersectionObserver;
   private timer?: ReturnType<typeof setInterval>;
   private destroyed = false;
 
-  async ngAfterViewInit(): Promise<void> {
+  ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+    this.visibilityObserver = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      this.visibilityObserver?.disconnect();
+      this.requestNearbyImages();
+      void this.initializeDeck();
+    }, { rootMargin: '300px' });
+    this.visibilityObserver.observe(this.host.nativeElement);
+  }
+
+  private async initializeDeck(): Promise<void> {
     const { register } = await import('swiper/element/bundle');
     if (this.destroyed) return;
     register();
@@ -115,13 +129,24 @@ export class ProjectCardSliderComponent implements AfterViewInit, OnDestroy {
     const swiper = this.deck.nativeElement.swiper;
     if (!swiper) return;
     this.activeIndex.set(swiper.activeIndex);
+    this.requestNearbyImages();
     this.atStart.set(swiper.isBeginning || swiper.slides.length < 2);
     this.atEnd.set(swiper.isEnd || swiper.slides.length < 2);
     if (this.atEnd()) this.pause();
   }
 
+  private requestNearbyImages(): void {
+    const requested = new Set(this.requestedImages());
+    for (let index = this.activeIndex() - 1; index <= this.activeIndex() + 1; index++) {
+      if (index >= 0 && index < this.slides.length) requested.add(index);
+    }
+    // Retain visited images so reverse navigation never clears a painted card.
+    if (requested.size !== this.requestedImages().size) this.requestedImages.set(requested);
+  }
+
   ngOnDestroy(): void {
     this.destroyed = true;
+    this.visibilityObserver?.disconnect();
     this.pause();
   }
 }

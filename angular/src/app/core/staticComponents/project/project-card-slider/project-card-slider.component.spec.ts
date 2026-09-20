@@ -35,6 +35,15 @@ describe('ProjectCardSliderComponent', () => {
     expect(host.querySelector('.position')).toBeNull();
   });
 
+  it('withholds screenshot requests in the initial document', () => {
+    const images: NodeListOf<HTMLImageElement> = fixture.nativeElement.querySelectorAll('img');
+    expect(images.length).toBe(2);
+    images.forEach(image => {
+      expect(image.hasAttribute('src')).toBeFalse();
+      expect(image.hasAttribute('srcset')).toBeFalse();
+    });
+  });
+
   it('shows the active title as an external link above the deck', () => {
     const host: HTMLElement = fixture.nativeElement;
     let titleLink = host.querySelector<HTMLAnchorElement>('.project-title-link');
@@ -66,5 +75,62 @@ describe('ProjectCardSliderComponent', () => {
     expect(left.defaultPrevented).toBeTrue();
     expect(next).toHaveBeenCalledTimes(1);
     expect(previous).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Project screenshot loading', () => {
+  let intersect: IntersectionObserverCallback;
+  let observer: IntersectionObserver;
+  let disconnect: jasmine.Spy;
+
+  beforeEach(async () => {
+    disconnect = jasmine.createSpy('disconnect');
+    observer = { observe: jasmine.createSpy('observe'), disconnect } as unknown as IntersectionObserver;
+    spyOn(window, 'IntersectionObserver').and.callFake(function(callback) {
+      intersect = callback;
+      return observer;
+    });
+    await TestBed.configureTestingModule({ imports: [ProjectCardSliderComponent] }).compileComponents();
+  });
+
+  it('requests only nearby cards on approach and preserves loaded images when navigating back', async () => {
+    const fixture = TestBed.createComponent(ProjectCardSliderComponent);
+    fixture.componentInstance.slides = Array.from({ length: 5 }, (_, index) => ({
+      title: `Card ${index}`, description: `Card ${index}`,
+      image: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=',
+    }));
+    fixture.detectChanges();
+    const images = () => Array.from(fixture.nativeElement.querySelectorAll('img') as NodeListOf<HTMLImageElement>)
+      .map(image => image.hasAttribute('src'));
+    expect(fixture.componentInstance.ready()).toBeFalse();
+    expect(images()).toEqual([false, false, false, false, false]);
+    expect(window.IntersectionObserver).toHaveBeenCalledWith(jasmine.any(Function), { rootMargin: '300px' });
+
+    intersect([{ isIntersecting: true } as IntersectionObserverEntry], observer);
+    // Dynamic import completion is outside fixture stability when the observer is mocked.
+    const deadline = performance.now() + 3000;
+    while (!fixture.componentInstance.ready() && performance.now() < deadline) {
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(images()).toEqual([true, true, false, false, false]);
+    expect(fixture.componentInstance.ready()).toBeTrue();
+    expect(disconnect).toHaveBeenCalled();
+
+    fixture.componentInstance.next();
+    fixture.detectChanges();
+    expect(images()).toEqual([true, true, true, false, false]);
+    fixture.componentInstance.previous();
+    fixture.detectChanges();
+    expect(images()).toEqual([true, true, true, false, false]);
+    fixture.destroy();
+  });
+
+  it('disconnects the observer when removed before reaching the viewport', () => {
+    const fixture = TestBed.createComponent(ProjectCardSliderComponent);
+    fixture.detectChanges();
+    fixture.destroy();
+    expect(disconnect).toHaveBeenCalled();
   });
 });

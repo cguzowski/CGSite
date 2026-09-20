@@ -6,6 +6,7 @@ Owner: projects agent. Slices P1–P3; homepage section 3, after Home and About.
 | --- | --- |
 | Projects container and ordered walkthrough data | [project](../../angular/src/app/core/staticComponents/project) |
 | Standalone card slider | [project-card-slider](../../angular/src/app/core/staticComponents/project/project-card-slider) |
+| Responsive screenshot sources | [media manifest and directive](../../angular/src/app/core/media), [asset generator](../../angular/scripts/optimize-images.py) |
 | Hosting-story images | [CGSitePhotos](../../angular/public/assets/images/CGSitePhotos) |
 | Atlas story images | [ACIPics](../../angular/public/assets/images/ACIPics) |
 | Payment Incident AI Copilot story images | [PayCoPilotPic](../../angular/public/assets/images/PayCoPilotPic) |

@@ -3,7 +3,7 @@
     <div class="photoText">
         <div class="flexpad">
             <div class="portrait-wrap">
-                <img src="assets/images/cgPic.JPG" alt="Christopher Guzowski" class="profile-photo" />
+                <img responsiveImage="assets/images/cgPic.JPG" [mediaEnabled]="portraitReady()" [imageSlotWidth]="200" alt="Christopher Guzowski" class="profile-photo" />
                 <svg class="portrait-words" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
                     <text x="100" y="12">Learn</text>
                     <text x="188" y="100" transform="rotate(90 188 100)">Test</text>

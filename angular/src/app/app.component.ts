@@ -5,12 +5,13 @@ import { ConnectComponent } from './core/staticComponents/connect/connect.compon
 import { ProjectComponent } from './core/staticComponents/project/project.component';
 import { HomeComponent } from './core/staticComponents/home/home.component';
 import { SectionNavigationComponent } from './core/staticComponents/navbar/section-navigation.component';
+import { ResponsiveImageDirective } from './core/media/responsive-image.directive';
 
 
 @Component({
     selector: 'app-root',
     host: { '[style.--video-ratio]': 'videoRatio' },
-    imports: [NavbarComponent, HomeComponent, AboutComponent, ConnectComponent, ProjectComponent, SectionNavigationComponent],
+    imports: [NavbarComponent, HomeComponent, AboutComponent, ConnectComponent, ProjectComponent, SectionNavigationComponent, ResponsiveImageDirective],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })

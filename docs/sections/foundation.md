@@ -14,6 +14,7 @@ Owner: coordinator/foundation agent. Active slices F3, M1, R1; F1/F2 are histori
 | Build / SSR | [package.json](../../angular/package.json), [angular.json](../../angular/angular.json), [server.ts](../../angular/server.ts) |
 | CI / static deployment | [GitHub Actions workflow](../../.github/workflows/ci-deploy.yml), [Pi deployment helper and setup](../../deploy/pi/README.md) |
 | Assets | [public](../../angular/public) |
+| Responsive media / F7 | [image directive and generated manifest](../../angular/src/app/core/media), [lossless asset generator](../../angular/scripts/optimize-images.py) |
 | Home background video | [Fuji WebM](../../angular/public/videos/fuji-water-stabilized-vp9-download.webm); sizing in app.component.css |
 | Verified environment / serving / baseline results | [F1 baseline](../BASELINE.md) |
 

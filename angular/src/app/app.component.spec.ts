@@ -27,6 +27,8 @@ describe('AppComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelector('.home-background-fallback')).toBeNull();
+    expect(compiled.querySelector('video')?.getAttribute('preload')).toBe('auto');
+    expect(compiled.querySelectorAll('#about img[src], #projects img[src]').length).toBe(0);
   });
 
   it('loads the static fallback only when iOS rejects hero autoplay', fakeAsync(() => {

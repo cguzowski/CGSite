@@ -65,6 +65,8 @@ swiper-slide {
   background: #147df5;
 }
 
+swiper-container.deck-pending { overflow: hidden; visibility: hidden; }
+
 .project-card {
   height: 100%;
   display: grid;

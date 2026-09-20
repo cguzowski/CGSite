@@ -21,6 +21,15 @@ describe('AboutComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('keeps the portrait URL out of the initial document until About approaches', () => {
+    const image: HTMLImageElement = fixture.nativeElement.querySelector('.profile-photo');
+    expect(image.hasAttribute('src')).toBeFalse();
+    component.portraitReady.set(true);
+    fixture.detectChanges();
+    expect(image.getAttribute('src')).toBeTruthy();
+    expect(image.getAttribute('srcset')).toContain('400w');
+  });
+
   it('offers accessible resume and profile links beneath the about content', () => {
     const host = fixture.nativeElement as HTMLElement;
     const links = Array.from(host.querySelectorAll<HTMLAnchorElement>('.profile-link'));

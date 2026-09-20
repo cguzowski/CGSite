@@ -42,10 +42,7 @@ describe('ProjectComponent', () => {
   });
 
   it('supplies the five infrastructure screenshots in numeric filename order', () => {
-    const images = Array.from(
-      fixture.nativeElement.querySelectorAll('.project-walkthrough:first-child app-project-card-slider img'),
-      (image: Element) => image.getAttribute('src'),
-    );
+    const images = component.personalWebsiteInfrastructureSlides.map(({ image }) => image);
 
     expect(images).toEqual([
       '/assets/images/CGSitePhotos/0raspby.jpg',

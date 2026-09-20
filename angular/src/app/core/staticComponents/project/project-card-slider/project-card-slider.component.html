@@ -12,12 +12,13 @@
     <ng-template #plainTitle><span class="project-slide-title">{{ activeSlide.title }}</span></ng-template>
   </div>
 
-  <swiper-container #deck init="false" tabindex="0" aria-label="Project slides. Use left and right arrow keys to browse."
+  <swiper-container #deck init="false" [class.deck-pending]="!ready()" tabindex="0" aria-label="Project slides. Use left and right arrow keys to browse."
     (pointerdown)="pause()" (click)="pause()" (keydown)="pause()">
     <swiper-slide *ngFor="let slide of slides; let i = index"
       [attr.inert]="i !== activeIndex() ? '' : null">
       <article class="project-card" [style.--card-color]="slide.color || '#147df5'">
-        <img class="project-image" [src]="slide.image" [alt]="slide.imageAlt || slide.title"
+        <img class="project-image" [responsiveImage]="slide.image" [mediaEnabled]="requestedImages().has(i)"
+          [imageSlotWidth]="320" [imageSlotHeight]="240" [alt]="slide.imageAlt || slide.title"
           draggable="false" />
         <div class="project-copy">
           <p class="project-text">{{ slide.description }}</p>
