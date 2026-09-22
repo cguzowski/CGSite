@@ -39,12 +39,13 @@ describe('ConnectComponent', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       'https://www.google.com/maps/search/?api=1&query=New+York+City%2C+New+York',
       'mailto:cguzowski.dev@gmail.com',
-      'tel:+16464272324',
+      'tel:+16468545750',
       'https://github.com/cguzowski',
       'assets/documents/resume.pdf',
       'https://www.linkedin.com/in/chris-guzowski/'
     ]);
-    expect(links[4].hasAttribute('download')).toBeTrue();
+    expect(links[4].hasAttribute('download')).toBeFalse();
+    expect(links[4].getAttribute('target')).toBe('_blank');
 
     for (const item of items) {
       expect(item.querySelector('.contact-item__icon')).not.toBeNull();

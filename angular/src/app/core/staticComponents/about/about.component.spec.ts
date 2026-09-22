@@ -40,7 +40,8 @@ describe('AboutComponent', () => {
       'LinkedIn'
     ]);
     expect(links[0].getAttribute('href')).toBe('assets/documents/resume.pdf');
-    expect(links[0].hasAttribute('download')).toBeTrue();
+    expect(links[0].hasAttribute('download')).toBeFalse();
+    expect(links[0].getAttribute('target')).toBe('_blank');
     expect(links[1].getAttribute('href')).toBe('https://github.com/cguzowski');
     expect(links[2].getAttribute('href')).toBe('https://www.linkedin.com/in/chris-guzowski/');
 
