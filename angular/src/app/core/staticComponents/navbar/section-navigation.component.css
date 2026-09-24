@@ -3,17 +3,19 @@ h2 { font-size: clamp(2.25rem, 3vw, 2.75rem); line-height: 1.15; letter-spacing:
 button, nav { display: none; }
 @media (max-width: 48rem) {
   h2 { font-size: 1.25rem; line-height: 1.4; letter-spacing: 0; text-align: center; }
-  :host.stuck {
+  /* Keep the title's flow height and sticky positioning stable in every state.
+     The larger controls overlay it so scroll anchoring never has to compensate. */
+  :host {
     position: sticky;
     top: 0;
     z-index: 10;
-    width: fit-content;
-    max-width: calc(100vw - 2rem);
-    margin-inline: auto;
-    padding-block: 0.35rem;
   }
-  :host.stuck h2,
+  :host.stuck button,
   :host.stuck nav {
+    position: absolute;
+    top: 0.35rem;
+    left: 50%;
+    transform: translateX(-50%);
     width: fit-content;
     max-width: 100%;
     margin-inline: auto;
@@ -21,7 +23,7 @@ button, nav { display: none; }
     border-radius: 999px;
     background: var(--page-background);
   }
-  :host.stuck .desktop-title { display: none; }
+  :host.stuck .desktop-title { visibility: hidden; }
   :host.stuck button {
     display: flex;
     align-items: center;
@@ -30,15 +32,13 @@ button, nav { display: none; }
     min-height: 44px;
     width: auto;
     padding: 0.2rem 1rem;
-    border: 0;
-    background: transparent;
     color: inherit;
     cursor: pointer;
   }
   button span { opacity: 0.45; }
   button .current { opacity: 1; font-weight: 750; }
-  .expanded { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  nav:not([hidden]) { display: flex; align-items: center; justify-content: center; gap: clamp(0.35rem, 2vw, 0.85rem); padding-inline: clamp(0.6rem, 2vw, 0.9rem); }
+  .expanded button { visibility: hidden; }
+  :host.stuck nav:not([hidden]) { display: flex; align-items: center; justify-content: center; gap: clamp(0.35rem, 2vw, 0.85rem); padding-inline: clamp(0.6rem, 2vw, 0.9rem); }
   a { display: flex; align-items: center; min-height: 44px; padding: 0.25rem; color: inherit; font-size: clamp(0.8rem, 3.6vw, 1rem); text-decoration: none; white-space: nowrap; }
   a[aria-current] { font-weight: 750; text-decoration: underline; text-underline-offset: 0.35em; }
   a:hover { text-decoration: underline; }
