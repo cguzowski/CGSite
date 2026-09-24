@@ -39,6 +39,11 @@ main {
   overflow-wrap: anywhere;
 }
 
+/* Fragment targets receive focus for navigation, but are not interactive controls. */
+.section:focus {
+  outline: none;
+}
+
 .section + .section {
   border-top: 1px solid var(--border-color);
 }

@@ -124,6 +124,17 @@ describe('AppComponent', () => {
     }
   });
 
+  it('does not draw a page-sized focus frame around section anchor targets', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const projects = fixture.nativeElement.querySelector('#projects') as HTMLElement;
+
+    projects.focus();
+
+    expect(document.activeElement).toBe(projects);
+    expect(getComputedStyle(projects).outlineStyle).toBe('none');
+  });
+
   it('identifies the site author and copyright in a footer', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
