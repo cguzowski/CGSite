@@ -32,13 +32,13 @@ describe('ProjectComponent', () => {
     expect(host.textContent).not.toContain('More Projects I\'ve made Coming Soon!');
   });
 
-  it('places the Payment Incident AI Copilot walkthrough before Atlas', () => {
+  it('orders the walkthroughs as Copilot, Atlas, then the self-hosted website', () => {
     expect(component.projectWalkthroughs.map(({ id }) => id)).toEqual([
-      'self-hosted-website',
       'payment-incident-ai-copilot',
       'atlas-capital-intelligence',
+      'self-hosted-website',
     ]);
-    expect(component.projectWalkthroughs[1].slides).toBe(component.paymentCopilotSlides);
+    expect(component.projectWalkthroughs[0].slides).toBe(component.paymentCopilotSlides);
   });
 
   it('supplies the five infrastructure screenshots in numeric filename order', () => {
@@ -75,6 +75,6 @@ describe('ProjectComponent', () => {
       '/assets/images/ACIPics/aiChat1Like5.jpg',
       '/assets/images/ACIPics/8aiChat2LikeExpert.jpg',
     ]);
-    expect(component.projectWalkthroughs[2].summary).toContain('planned');
+    expect(component.projectWalkthroughs[1].summary).toContain('planned');
   });
 });

@@ -265,12 +265,6 @@ export class ProjectComponent {
 
   readonly projectWalkthroughs: readonly ProjectWalkthrough[] = [
     {
-      id: 'self-hosted-website',
-      title: 'Self-hosted personal website',
-      summary: 'The infrastructure path from a Raspberry Pi host through domain management to this live portfolio.',
-      slides: this.personalWebsiteInfrastructureSlides,
-    },
-    {
       id: 'payment-incident-ai-copilot',
       title: 'Payment Incident AI Copilot',
       summary: 'An incident-investigation workflow spanning evidence gathering, retrieval-assisted analysis, human review, and audit output.',
@@ -281,6 +275,12 @@ export class ProjectComponent {
       title: 'Atlas Capital Intelligence',
       summary: 'An implemented portfolio-analysis frontend; Alpaca retrieval, caching, and chatbot integration remain planned.',
       slides: this.atlasCapitalIntelligenceSlides,
+    },
+    {
+      id: 'self-hosted-website',
+      title: 'Self-hosted personal website',
+      summary: 'The infrastructure path from a Raspberry Pi host through domain management to this live portfolio.',
+      slides: this.personalWebsiteInfrastructureSlides,
     },
   ];
 }
