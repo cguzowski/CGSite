@@ -34,12 +34,25 @@ export function createInteractiveMarquee(
   let frameId: number | undefined;
   let previousTimestamp: number | undefined;
   let activePointer: number | undefined;
+  let activeTouch: number | undefined;
+  let touchDirection: 'horizontal' | 'vertical' | undefined;
   let dragStartX = 0;
+  let dragStartY = 0;
   let dragStartScrollLeft = 0;
   let subpixelRemainder = 0;
+  const touchEventsSupported = typeof TouchEvent !== 'undefined';
+
+  const findTouch = (touches: TouchList, identifier: number): Touch | undefined => {
+    for (let index = 0; index < touches.length; index += 1) {
+      if (touches[index].identifier === identifier) {
+        return touches[index];
+      }
+    }
+    return undefined;
+  };
 
   const advance = (timestamp: number): void => {
-    if (activePointer === undefined) {
+    if (activePointer === undefined && activeTouch === undefined) {
       if (previousTimestamp !== undefined) {
         const groupWidth = group.getBoundingClientRect().width;
         const distance = (timestamp - previousTimestamp) * groupWidth / MARQUEE_DURATION_MS;
@@ -69,6 +82,9 @@ export function createInteractiveMarquee(
   };
 
   const onPointerDown = (event: PointerEvent): void => {
+    if (event.pointerType === 'touch' && touchEventsSupported) {
+      return;
+    }
     if (activePointer !== undefined || (event.pointerType === 'mouse' && event.button !== 0)) {
       return;
     }
@@ -82,6 +98,9 @@ export function createInteractiveMarquee(
   };
 
   const onPointerMove = (event: PointerEvent): void => {
+    if (event.pointerType === 'touch' && touchEventsSupported) {
+      return;
+    }
     if (event.pointerId !== activePointer) {
       return;
     }
@@ -94,6 +113,65 @@ export function createInteractiveMarquee(
     }
   };
 
+  const finishTouch = (): void => {
+    activeTouch = undefined;
+    touchDirection = undefined;
+    previousTimestamp = undefined;
+    subpixelRemainder = 0;
+    marquee.classList.remove('marquee--dragging');
+  };
+
+  const onTouchStart = (event: TouchEvent): void => {
+    if (activeTouch !== undefined || activePointer !== undefined) {
+      return;
+    }
+    const touch = event.changedTouches[0];
+    if (!touch) {
+      return;
+    }
+    activeTouch = touch.identifier;
+    touchDirection = undefined;
+    dragStartX = touch.clientX;
+    dragStartY = touch.clientY;
+    dragStartScrollLeft = marquee.scrollLeft;
+    previousTimestamp = undefined;
+    subpixelRemainder = 0;
+    marquee.classList.add('marquee--dragging');
+  };
+
+  const onTouchMove = (event: TouchEvent): void => {
+    if (activeTouch === undefined) {
+      return;
+    }
+    const touch = findTouch(event.touches, activeTouch);
+    if (!touch) {
+      return;
+    }
+    const distanceX = dragStartX - touch.clientX;
+    const distanceY = dragStartY - touch.clientY;
+    if (touchDirection === undefined) {
+      if (Math.max(Math.abs(distanceX), Math.abs(distanceY)) < 4) {
+        return;
+      }
+      touchDirection = Math.abs(distanceX) > Math.abs(distanceY) ? 'horizontal' : 'vertical';
+      if (touchDirection === 'vertical') {
+        finishTouch();
+        return;
+      }
+    }
+    const nextPosition = dragStartScrollLeft + distanceX;
+    marquee.scrollLeft = autoPlay
+      ? wrapScrollPosition(nextPosition, group.getBoundingClientRect().width)
+      : nextPosition;
+    event.preventDefault();
+  };
+
+  const onTouchEnd = (event: TouchEvent): void => {
+    if (activeTouch !== undefined && findTouch(event.changedTouches, activeTouch)) {
+      finishTouch();
+    }
+  };
+
   marquee.classList.add('marquee--native-loop');
   marquee.scrollLeft = autoPlay ? group.getBoundingClientRect().width : 0;
   marquee.addEventListener('pointerdown', onPointerDown);
@@ -101,6 +179,10 @@ export function createInteractiveMarquee(
   marquee.addEventListener('pointerup', endDrag);
   marquee.addEventListener('pointercancel', endDrag);
   marquee.addEventListener('lostpointercapture', endDrag);
+  marquee.addEventListener('touchstart', onTouchStart, { passive: true });
+  marquee.addEventListener('touchmove', onTouchMove, { passive: false });
+  marquee.addEventListener('touchend', onTouchEnd, { passive: true });
+  marquee.addEventListener('touchcancel', onTouchEnd, { passive: true });
   if (autoPlay) {
     frameId = requestFrame(advance);
   }
@@ -114,6 +196,10 @@ export function createInteractiveMarquee(
     marquee.removeEventListener('pointerup', endDrag);
     marquee.removeEventListener('pointercancel', endDrag);
     marquee.removeEventListener('lostpointercapture', endDrag);
+    marquee.removeEventListener('touchstart', onTouchStart);
+    marquee.removeEventListener('touchmove', onTouchMove);
+    marquee.removeEventListener('touchend', onTouchEnd);
+    marquee.removeEventListener('touchcancel', onTouchEnd);
     marquee.classList.remove('marquee--native-loop', 'marquee--dragging');
   };
 }

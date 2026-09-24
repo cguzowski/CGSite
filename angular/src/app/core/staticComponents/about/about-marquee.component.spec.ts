@@ -8,6 +8,19 @@ import {
 describe('AboutMarqueeComponent', () => {
   let fixture: ComponentFixture<AboutMarqueeComponent>;
 
+  function touchEvent(
+    type: string,
+    touches: Array<{ identifier: number; clientX: number; clientY: number }>,
+    changedTouches = touches
+  ): TouchEvent {
+    const event = new Event(type, { bubbles: true, cancelable: true }) as TouchEvent;
+    Object.defineProperties(event, {
+      touches: { value: touches },
+      changedTouches: { value: changedTouches }
+    });
+    return event;
+  }
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AboutMarqueeComponent]
@@ -177,6 +190,72 @@ describe('AboutMarqueeComponent', () => {
     }
 
     expect(marquee.scrollLeft).toBeGreaterThan(1700);
+    cleanup();
+  });
+
+  it('uses the initiating touch to drag on iOS and resumes after that touch ends', () => {
+    const marquee = document.createElement('div');
+    const group = document.createElement('div');
+    const frames: FrameRequestCallback[] = [];
+    let scrollLeft = 0;
+    Object.defineProperty(marquee, 'scrollLeft', {
+      get: () => scrollLeft,
+      set: value => scrollLeft = value
+    });
+    spyOn(group, 'getBoundingClientRect').and.returnValue({ width: 560 } as DOMRect);
+    const cleanup = createInteractiveMarquee(marquee, group, callback => {
+      frames.push(callback);
+      return frames.length;
+    }, () => undefined);
+
+    frames.shift()!(1_000);
+    frames.shift()!(2_000);
+    expect(marquee.scrollLeft).toBeCloseTo(570, 4);
+
+    marquee.dispatchEvent(touchEvent('touchstart', [
+      { identifier: 9, clientX: 200, clientY: 100 }
+    ]));
+    const move = touchEvent('touchmove', [
+      { identifier: 9, clientX: 140, clientY: 105 }
+    ]);
+    marquee.dispatchEvent(move);
+    expect(move.defaultPrevented).toBeTrue();
+    expect(marquee.scrollLeft).toBeCloseTo(630, 4);
+
+    frames.shift()!(3_000);
+    expect(marquee.scrollLeft).toBeCloseTo(630, 4);
+
+    marquee.dispatchEvent(touchEvent('touchend', [], [
+      { identifier: 9, clientX: 140, clientY: 105 }
+    ]));
+    frames.shift()!(4_000);
+    frames.shift()!(5_000);
+    expect(marquee.scrollLeft).toBeCloseTo(640, 4);
+    cleanup();
+  });
+
+  it('leaves a primarily vertical iOS touch gesture to native page scrolling', () => {
+    const marquee = document.createElement('div');
+    const group = document.createElement('div');
+    let scrollLeft = 0;
+    Object.defineProperty(marquee, 'scrollLeft', {
+      get: () => scrollLeft,
+      set: value => scrollLeft = value
+    });
+    spyOn(group, 'getBoundingClientRect').and.returnValue({ width: 560 } as DOMRect);
+    const cleanup = createInteractiveMarquee(marquee, group, () => 1, () => undefined);
+
+    marquee.dispatchEvent(touchEvent('touchstart', [
+      { identifier: 4, clientX: 200, clientY: 100 }
+    ]));
+    const move = touchEvent('touchmove', [
+      { identifier: 4, clientX: 195, clientY: 160 }
+    ]);
+    marquee.dispatchEvent(move);
+
+    expect(move.defaultPrevented).toBeFalse();
+    expect(marquee.classList).not.toContain('marquee--dragging');
+    expect(marquee.scrollLeft).toBe(560);
     cleanup();
   });
 });
