@@ -16,16 +16,22 @@
   width: 100%;
   min-width: 0;
   overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
   container-type: inline-size;
   mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
 }
 
+.marquee--dragging {
+  cursor: grabbing;
+}
+
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee-scroll 56s linear infinite;
-  will-change: transform;
 }
 
 .marquee--native-loop {
@@ -38,11 +44,8 @@
   display: none;
 }
 
-/* Native scrolling must paint the full strip, without a transformed WebKit layer. */
 .marquee--native-loop .marquee-track {
-  animation: none;
   transform: none;
-  will-change: auto;
 }
 
 .marquee-group {
@@ -92,11 +95,6 @@
   line-height: 1.35;
 }
 
-@keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-25%); }
-}
-
 @media (max-width: 48rem) {
   :host { --marquee-gap: 0.75rem; }
 
@@ -116,6 +114,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .marquee { overflow-x: auto; mask-image: none; -webkit-mask-image: none; }
-  .marquee-track { animation: none; }
   .marquee-group[aria-hidden="true"] { display: none; }
 }

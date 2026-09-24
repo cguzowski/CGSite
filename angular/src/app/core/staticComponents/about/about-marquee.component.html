@@ -1,4 +1,9 @@
-<div class="marquee" role="region" aria-label="Professional highlights">
+<div
+  class="marquee"
+  role="region"
+  aria-label="Professional highlights. Drag or swipe horizontally to browse."
+  tabindex="0"
+>
   <div class="marquee-track">
     @for (duplicate of duplicateGroups; track $index) {
       <div class="marquee-group" role="list" [attr.aria-hidden]="duplicate ? 'true' : null">

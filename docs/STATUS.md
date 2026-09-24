@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-09-20. Baseline branch: `modernizing-baseline`.
+Updated: 2026-09-24. Baseline branch: `modernizing-baseline`.
 
 ## Current decision
 
@@ -9,6 +9,8 @@ Website application stack: **TypeScript/Angular only**. Sections: **Home → Abo
 Cleanup is implemented in application code and indexes. Content/design refresh remains separate from this foundation change.
 
 ## Delivery and observed tree
+
+- About marquee direct manipulation (September 24): replaced the desktop CSS-transform path and iOS-only scroll fallback with one native-scroll loop on every platform. Mouse, pen and single-touch pointer drags pause automatic movement, move the real horizontal position, wrap between buffered copies without a visible jump, and resume at the existing 56-second pace from the released position. Vertical page gestures remain available through `touch-action: pan-y`; the region is focusable and announces its drag affordance. Reduced motion remains manual-only. A rendered follow-up reproduced stationary automatic motion: per-frame subpixel increments were read back after browser rounding and lost. The loop now retains that fractional remainder; a rounding regression contract failed before the correction and passed after it. Browser verification measured 61.6px of uninterrupted automatic movement over 1.5 seconds, then a 312.8px drag followed by 48.8px of resumed movement over 1.2 seconds. The focused marquee suite passed 8/8, the full Angular suite passed 63/63, and the production build passed with a 404.81 kB initial bundle plus the existing component-style budget warnings. Physical touch-device verification remains outstanding. No deployment.
 
 - Contact link contract reconciliation (September 22): updated the About and Contact regression expectations for the corrected `tel:+16468545750` phone URI and resume links that open in a new tab instead of downloading. The focused About and Contact suite passed 8/8 with ChromeHeadless outside the sandbox after the initial sandboxed Chrome launch returned `spawn EPERM`; the full Angular suite passed 61/61 and `git diff --check` passed. No deployment.
 
