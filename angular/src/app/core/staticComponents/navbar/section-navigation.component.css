@@ -34,6 +34,7 @@ button, nav { display: none; }
     padding: 0.2rem 1rem;
     color: inherit;
     cursor: pointer;
+    white-space: nowrap;
   }
   button span { opacity: 0.45; }
   button .current { opacity: 1; font-weight: 750; }
